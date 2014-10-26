@@ -8,7 +8,7 @@ This project contains a bootable, live-USB image for the Excito B3 miniserver. Y
 The kernel used in the image is **3.17.1**, with the necessary code to temporarily switch off the L2 cache in early boot (per [this link](https://lists.debian.org/debian-boot/2012/08/msg00804.html)) prepended, and the kirkwood-b3 device tree blob appended (which is why you don't have to reflash your U-Boot to use it). The `.config` used for the kernel may be found [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/configs/b3_live_usb_config) in the git archive.
 
 The image may be downloaded from the link below (or via `wget`, per the following instructions).
-> Note that this differs slightly from its sister [gentoo-on-b3 project](https://github.com/sakaki-/gentoo-on-b3), in that there is only a *single* image supplied. Accordingly, if you wish to use this image in a 'diskless' chassis, you will need to make a small change before booting, which is detailed later in these notes.
+> Note that this differs slightly from its sister [gentoo-on-b3 project](https://github.com/sakaki-/gentoo-on-b3), in that there is only a *single* image supplied. Accordingly, if you wish to use this image in a 'diskless' chassis, you will need to make a few small changes before booting, which are detailed later in these notes.
 
 Variant | Image | Digital Signature
 :--- | ---: | ---:
@@ -85,13 +85,14 @@ Obviously, substitute the appropriate path for `/dev/sdX1` in the above. If your
 ## Select Alternative Kernel (*Only* for B3s with no Hard Drive)
 
 Next, if (and **only** if) you are using a B3 without an internal hard drive fitted, you will need switch the kernel used on the USB key, or your Arch Linux system will fail to boot. 
-> Users of standard B3s (which have an internal hard drive, running the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel in place for you. Continue reading at "Booting!", below.
+> Users of standard B3s (which have an internal hard drive, running the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel (and `fstab`) in place for you. Continue reading at "Booting!", below.
 
 Specifically, users of diskless B3s will need to:
 * rename the shipped kernel `/install/install.itb` (on the USB key's first partition) to something else (`/install/install_withdisk.itb`, for example); and then
-* rename the supplied `/install/install_diskless.itb` to `/install/install.itb`. 
+* rename the supplied `/install/install_diskless.itb` to `/install/install.itb`; and then
+* modify the '/etc/fstab' file (on the USB key's second partition), so that the correct drive is specified.
 
-You need only do this once. The first partition on the USB key is formatted `fat16`, so the change can be made on any Windows box; or, if using Linux:
+You need only make these changes once. Assuming you are using Linux:
 ```
 # mkdir /tmp/mntusb
 # mount -v /dev/sdX1 /tmp/mntusb
@@ -99,10 +100,14 @@ You need only do this once. The first partition on the USB key is formatted `fat
 # mv /tmp/mntusb/install/install_diskless.itb /tmp/mntusb/install/install.itb
 # sync
 # umount -v /tmp/mntusb
+# mount -v /dev/sdX2 /tmp/mntusb
+# sed -i s/sdb/sda/g /tmp/mntusb/etc/fstab
+# sync
+# umount -v /tmp/mntusb
 # rmdir /tmp/mntusb
 ```
 
-Obviously, substitute the appropriate path for `/dev/sdX1` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1`; if it is on `/dev/sdd`, you'd use `/dev/sdd1`, etc.
+Obviously, substitute the appropriate path for `/dev/sdX1` and `/dev/sdX2` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1` and `/dev/sdc2`; if it is on `/dev/sdd`, you'd use `/dev/sdd1` and `/dev/sdd2`, etc.
 
 ## Booting!
 
