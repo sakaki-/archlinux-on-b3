@@ -90,7 +90,7 @@ Next, if (and **only** if) you are using a B3 without an internal hard drive fit
 Specifically, users of diskless B3s will need to:
 * rename the shipped kernel `/install/install.itb` (on the USB key's first partition) to something else (`/install/install_withdisk.itb`, for example); and then
 * rename the supplied `/install/install_diskless.itb` to `/install/install.itb`; and then
-* modify the '/etc/fstab' file (on the USB key's second partition), so that the correct drive is specified.
+* modify the `/etc/fstab` file (on the USB key's second partition), so that the correct drive is specified.
 
 You need only make these changes once. Assuming you are using Linux:
 ```
