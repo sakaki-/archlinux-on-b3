@@ -12,7 +12,7 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Image | Digital Signature
 :--- | ---: | ---:
-B3 with or without Internal Drive | [archb3img.zx](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.0.0/archb3img.xz) | [archb3img.zx.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.0.0/archb3img.xz.asc)
+B3 with or without Internal Drive | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.0.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.0.0/archb3img.xz.asc)
 
 > Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the 3 Oct 2014 Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org), please refer to that site for licensing details of firmware files etc.
 
@@ -166,6 +166,32 @@ Also, please note that there is no handler bound to the rear-button press events
 Wait a few seconds after the green LED turns off before physically removing power.
 
 Have fun! ^-^
+
+## Erratum
+
+At the time of writing, there is an ongoing issue with the Marvell Ethernet driver for kernels >= 3.16. As I discuss [here](http://forum.mybubba.org/viewtopic.php?f=7&t=5738), this can cause data corruption when performing large data transfers on the B3. This will presumably be fixed upstream eventually, but for now, you should implement the following small workaround when running Arch on your B3 (incidentally, this workaround has already been put in place for you in the latest [Gentoo live-USB](https://github.com/sakaki-/gentoo-on-b3) image for the B3, but did not make it into this release for Arch, so you'll need to do it yourself, as detailed next).
+
+Begin by updating your package metadata, then downloading the `ethtool` software. Issue:
+```
+[root@archb3 ~]# pacman -Sy
+   (confirm if prompted)
+[root@archb3 ~]# pacman -S ethtool
+   (confirm if prompted)
+```
+
+Now, create a udev rule to turn off TCP segmentation offload (`tso`) for the B3's ethernet ports:
+```
+[root@archb3 ~]# nano -w /etc/udev/rules.d/50-marvell-fix-tso.rules
+```
+
+and place the following text in that file:
+```
+# Disable Marvell TCP segmentation offload due to bugs
+# See e.g. http://archlinuxarm.org/forum/viewtopic.php?f=9&t=7692&start=20
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth[0-1]", RUN+="/usr/sbin/ethtool -K %k tso off"
+```
+
+Save, and exit `nano`. When you next reboot your B3, `tso` will be disabled (you only need to set up this workaround once).
 
 ## Miscellaneous Points
 
