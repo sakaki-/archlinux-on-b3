@@ -139,7 +139,7 @@ root@192.168.1.129's password: <type root and press Enter>
 ```
 and you're in!  (If you get `connection refused`, simply wait a few seconds longer, then try again.) Obviously, substitute the correct network address for your B3 in the command above (if you changed it in `/install/wan`, earlier). Note that you may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
 
-> If you have changed the settings in `/install/wan`, and are unable to log in the first time (even though your B3 appears to have booted OK), try powering off your B3 (hold down the rear button for about 5 seconds, and wait for the front LED to turn off). Then, boot from the USB (with the rear button held down) one further time. You should find that your changed settings have now been accepted, and you can `ssh` in successfully.
+> **Important:** if you have changed the settings in `/install/wan`, and are unable to log in the first time (even though your B3 appears to have booted OK), try powering off your B3 (hold down the rear button for about 5 seconds, and wait for the front LED to turn off). Then, boot from the USB (with the rear button held down) one further time. You should find that your changed settings have now been accepted, and you can `ssh` in successfully.
 
 If you have previously connected to a *different* machine with the *same* IP address as your B3 via `ssh` from the client PC, you may need to delete its host fingerprint (from `~/.ssh/known_hosts` on the PC) before `ssh` will allow you to connect.
 
