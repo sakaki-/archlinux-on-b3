@@ -5,7 +5,7 @@ Bootable live-USB of Arch Linux for the Excito B3 miniserver (with [archlinuxarm
 <img src="https://raw.githubusercontent.com/sakaki-/resources/master/excito/b3/Excito_b3.jpg" alt="Excito B3" width="250px" align="right"/>
 This project contains a bootable, live-USB image for the Excito B3 miniserver. You can use it as a rescue disk, to play with Arch Linux, or as the starting point to install Arch Linux on your B3's main hard drive. You can even use it on a diskless B3. No soldering, compilation, or [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) flashing is required! You can run it without harming your B3's existing software; however, any changes you make while running the system *will* be saved to the USB (i.e., there is persistence).
 
-As of release 1.1.0, the current [linux-kirkwood-dt kernel](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) from [archlinuxarm.org](http://archlinuxarm.org) is used. This will automatically be updated (along with all other packages on your system) when you execute `pacman -Syu`.
+As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`.
 > For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This first kernel (whose version never changes) runs a script from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The script fragment `/boot/kexec.sh` carries this out, and you can edit this file if you like (for example, to modify the kernel command line).
 
 The image may be downloaded from the link below (or via `wget`, per the following instructions).
@@ -116,11 +116,14 @@ All done, you are now ready to try booting your B3!
 
 Begin with your B3 powered off and the power cable removed. Insert the USB key into either of the USB slots on the back of the B3, and make sure the other USB slot is unoccupied. Connect the B3 to your local network using the **wan** Ethernet port. Then, *while holding down the button on the back of the B3*, apply power (insert the power cable). After five seconds or so, release the button. If all is well, the B3 should boot the interstitial kernel off of the USB key (rather than the internal drive), then patch, load and `kexec` the archlinuxarm.org kernel, and then proceed to mount the root partition (also from the USB key) and start Arch Linux. This will all take about 60 seconds or so. The LED on the front of the B3 should:
 
-1. foo
-1. bar
-1. 
+1. first, turn **green**, for about 20 seconds, as the interstitial kernel loads; then,
+1. turn **off** for about 10 seconds, and the 'real' kernel is patched and loaded; then
+1. turn **purple** for about 20 seconds, as the real kernel boots, and then
+1. turn **green** as Arch Linux comes up.
 
 About 20 seconds after the LED turns green in step 4, above, you should be able to log in, via ssh, per the following instructions.
+
+> The image uses a solid green LED as its 'normal' state, so that you can easily tell at a glance whether your B3 is running an Excito/Debian system (blue LED) or a Arch Linux one (green LED).
 
 ## Connecting to the B3
 
@@ -134,7 +137,7 @@ Warning: Permanently added '192.168.1.129' (ED25519) to the list of known hosts.
 root@192.168.1.129's password: <type root and press Enter>
 [root@archb3 ~]# 
 ```
-and you're in! Obviously, substitute the correct network address for your B3 in the command above (if you changed it in `/install/wan`, earlier). Note that you may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
+and you're in!  (If you get `connection refused`, simply wait a few seconds longer, then try again.) Obviously, substitute the correct network address for your B3 in the command above (if you changed it in `/install/wan`, earlier). Note that you may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
 
 If you have previously connected to a *different* machine with the *same* IP address as your B3 via `ssh` from the client PC, you may need to delete its host fingerprint (from `~/.ssh/known_hosts` on the PC) before `ssh` will allow you to connect.
 
@@ -144,7 +147,7 @@ The supplied image contains a configured Arch Linux system, based on the `ArchLi
 
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
-The drivers for WiFi (if you have the hardware on your B3) *are* present, but configuration of WiFi in master mode (using hostapd) is beyond the scope of this short write up (see [here](http://nims11.wordpress.com/2012/04/27/hostapd-the-linux-way-to-create-virtual-wifi-access-point/) for some details). The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom` is currently set to `GB`). Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility; see [these notes](https://wiki.archlinux.org/index.php/netctl) for example. There is also some useful information about `netctl`, bridging etc. on [this wiki page](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#The_netctl_way).
+The drivers for WiFi (if you have the hardware on your B3) *are* present, but configuration of WiFi in master mode (using hostapd) is beyond the scope of this short write up (see [here](http://nims11.wordpress.com/2012/04/27/hostapd-the-linux-way-to-create-virtual-wifi-access-point/) for some details). The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`. Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility; see [these notes](https://wiki.archlinux.org/index.php/netctl) for example. There is also some useful information about `netctl`, bridging etc. on [this wiki page](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#The_netctl_way).
 
 Once you have networking set up as you like it, you should issue:
 ```
@@ -231,7 +234,7 @@ To install / upgrade a particular package (such as e.g., the apache web server),
 [root@archb3 ~]# pacman -S apache
    (confirm when prompted)
 ```
-You can install any packages you like using `pacman`, it should not break your system. If working from the USB, packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
+You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages)). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
 
 To bring the system completely up to date at any time (Arch Linux is a rolling distribution), issue:
 ```
@@ -241,7 +244,13 @@ To bring the system completely up to date at any time (Arch Linux is a rolling d
 
 Note that this may also upgrade your kernel, if a new version has become available on [archlinuxarm.org](http://archlinuxarm.org). In this case, you may see a warning like the following printed out during the upgrade:
 ```
+(n/m) upgrading linux-kirkwood-dt                  [#####################] 100%
+>>> Updating module dependencies. Please wait ...
+    Remember, on most systems this new kernel will not boot without
+    further user action.
 ```
+
+However, you do not need to worry, as the interstitial kernel's `init` will take care of this for you. Simply reboot, and you'll be using your new kernel!
 
 For more information about Arch Linux setup, see the official [Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide). Useful notes about system maintenance on Arch Linux are also available [here](https://wiki.archlinux.org/index.php/System_maintenance).
 
