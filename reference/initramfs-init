@@ -1,0 +1,45 @@
+#!/bin/busybox sh
+# Patch, then kexec, a standard archlinuxarm kernel on an Excito B3.
+# Copyright (c) 2015 sakaki <sakaki@deciban.com>
+# License: GPL 3.0+
+# NO WARRANTY
+
+# Simple init script to source /boot/kexec.sh
+# (the sourced script should setup and then kexec -e the final
+# target kernel)
+
+show_red_led() {
+    # turn off green and blue LEDs
+    echo -n 0 > /sys/class/leds/bubba3\:green\:programming/brightness
+    echo -n 0 > /sys/class/leds/bubba3\:blue\:active/brightness
+    # turn on the red (error) LED
+    cat /sys/class/leds/bubba3\:red\:error/max_brightness > \
+        /sys/class/leds/bubba3\:red\:error/brightness
+}
+
+# Mount the /proc and /sys filesystems.
+/bin/busybox mount -t proc none /proc
+/bin/busybox mount -t sysfs none /sys
+/bin/busybox mount -t devpts none /dev/pts
+# ensure all symlinks are present
+/bin/busybox --install -s
+
+BOOT="/dev/sda1"
+DELAY=0
+
+KSCRIPT="/boot/kexec.sh"
+
+sleep "${DELAY}"
+echo "Mounting boot filesystem (read only)..."
+mount -o ro "${BOOT}" /boot
+
+if [ -f "${KSCRIPT}" ]; then
+    echo "Sourcing ${KSCRIPT}..."
+    source "${KSCRIPT}"
+else
+    echo "Error - ${KSCRIPT} not found!" >&2
+    # light the red led
+    show_red_led
+    echo "Starting recovery shell on serial console..."
+    exec /bin/busybox sh -i
+fi
