@@ -188,7 +188,12 @@ Have fun! ^-^
 
 If you like Arch Linux, and want to set it up permanently on the B3's internal hard drive, you can do so easily (it takes less than 5 minutes). The full process is described below. (Note, this is strictly optional, you can simply run Arch Linux from the USB key, if you are just experimenting, or using it as a rescue system.)
 
-> **Warning** - the below process will wipe all existing software and data from your internal drive, so be sure to back that up first, before proceeding.
+> **Warning** - the below process will wipe all existing software and data from your internal drive, so be sure to back that up first, before proceeding. It will set up:
+* /dev/sda1 as a 64MiB boot partition, and format it `ext3`;
+* /dev/sda2 as a 1GiB swap partition;
+* /dev/sda3 as a root partition using the rest of the drive, and format it `ext4`.
+
+> Note also that the script `/root/install_on_sda.sh` will install using a DOS partition table; if you'd rather use GPT (and your version of U-Boot supports it), then use `/root/install_on_sda_gpt.sh` instead.
 
 OK, first, boot into the image and then connect to your B3 via `ssh`, as described above. Then, (as of version 1.1.0) you can simply run the supplied script to install onto your hard drive:
 ```
