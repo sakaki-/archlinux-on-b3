@@ -13,14 +13,16 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.1.1 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.1/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.1/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.1.2 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz.asc)
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 27 March 2015), please refer to that site for licensing details of firmware files etc.
+The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
+
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 29 March 2015), please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 144MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 146MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As shipped, the image assumes you have an internal hard drive fitted; if using a diskless chassis, be sure to follow the instructions given later, before attempting to boot.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -28,10 +30,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.1/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.1/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (144MiB) and its signature.
+to fetch the compressed disk image file (146MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
@@ -139,7 +141,7 @@ root@192.168.1.129's password: <type root and press Enter>
 ```
 and you're in!  (If you get `connection refused`, simply wait a few seconds longer, then try again.) Obviously, substitute the correct network address for your B3 in the command above (if you changed it in `/install/wan`, earlier). Note that you may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
 
-> **Important:** if you have changed the settings in `/install/wan`, and are unable to log in the first time (even though your B3 appears to have booted OK), try powering off your B3 (hold down the rear button for about 5 seconds, and wait for the front LED to turn off). Then, boot from the USB (with the rear button held down) one further time. You should find that your changed settings have now been accepted, and you can `ssh` in successfully.
+> **Important:** if you have changed the settings in `/install/wan`, and are unable to log in the first time (even though your B3 appears to have booted OK), try powering off your B3 (hold down the rear button for about 5 seconds, and wait for the front LED to turn off). Then, boot from the USB (with the rear button held down) one further time. You should find that your changed settings have now been accepted, and you can `ssh` in successfully. (Incidentally, the race condition that caused this issue has been addressed as of release 1.1.1.)
 
 If you have previously connected to a *different* machine with the *same* IP address as your B3 via `ssh` from the client PC, you may need to delete its host fingerprint (from `~/.ssh/known_hosts` on the PC) before `ssh` will allow you to connect.
 
@@ -150,7 +152,7 @@ The supplied image contains a configured Arch Linux system, based on the `ArchLi
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
 The drivers for WiFi (if you have the hardware on your B3) *are* present, but configuration of WiFi in master mode (using hostapd) is beyond the scope of this short write up (see [here](http://nims11.wordpress.com/2012/04/27/hostapd-the-linux-way-to-create-virtual-wifi-access-point/) for some details). The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`.
-> NB - there is currently an issue with the archlinuxarm.org kernel, which means that WiFi is _not_ currently supported. I have requested that the kernel configuration be changed, so hopefully this will be fixed upstream soon.
+> You can use the `iwconfig` command to show the status of your wireless adaptors.
 
 Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility; see [these notes](https://wiki.archlinux.org/index.php/netctl) for example. There is also some useful information about `netctl`, bridging etc. on [this wiki page](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#The_netctl_way).
 
@@ -255,7 +257,7 @@ Note that this may also upgrade your kernel, if a new version has become availab
     further user action.
 ```
 
-However, you do not need to worry, as the interstitial kernel's `init` will take care of this for you. Simply reboot, and you'll be using your new kernel!
+However, you do not need to worry, as the interstitial kernel's `init` will take care of this "further user action" for you. Simply reboot, and you'll be using your new kernel!
 
 For more information about Arch Linux setup, see the official [Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide). Useful notes about system maintenance on Arch Linux are also available [here](https://wiki.archlinux.org/index.php/System_maintenance).
 
