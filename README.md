@@ -101,9 +101,10 @@ You need only make these changes once. Assuming you are using Linux:
 # mount -v /dev/sdX1 /tmp/mntusb
 # mv /tmp/mntusb/install/install.itb /tmp/mntusb/install/install_withdisk.itb
 # mv /tmp/mntusb/install/install_diskless.itb /tmp/mntusb/install/install.itb
+# sed -i s/sdb/sda/g /tmp/mntusb/kexec.sh
 # sync
 # umount -v /tmp/mntusb
-# mount -v /dev/sdX2 /tmp/mntusb
+# mount -v /dev/sdX3 /tmp/mntusb
 # sed -i s/sdb/sda/g /tmp/mntusb/etc/fstab
 # sync
 # umount -v /tmp/mntusb
