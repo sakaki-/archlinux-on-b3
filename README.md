@@ -111,7 +111,7 @@ You need only make these changes once. Assuming you are using Linux:
 # rmdir /tmp/mntusb
 ```
 
-Obviously, substitute the appropriate path for `/dev/sdX1` and `/dev/sdX2` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1` and `/dev/sdc2`; if it is on `/dev/sdd`, you'd use `/dev/sdd1` and `/dev/sdd2`, etc.
+Obviously, substitute the appropriate path for `/dev/sdX1` and `/dev/sdX3` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1` and `/dev/sdc3`; if it is on `/dev/sdd`, you'd use `/dev/sdd1` and `/dev/sdd3`, etc.
 
 ## Booting!
 
