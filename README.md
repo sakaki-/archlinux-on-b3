@@ -247,9 +247,9 @@ To install / upgrade a particular package (such as e.g., the apache web server),
 [root@archb3 ~]# pacman -S apache
    (confirm when prompted)
 ```
-You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages)). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
+You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages), filter by `armv5` architecture). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
 
-To bring the system completely up to date at any time (Arch Linux is a rolling distribution), issue:
+To bring the system completely up to date at any time (Arch Linux is a rolling distribution, so it is [recommended](https://wiki.archlinux.org/index.php/pacman#Partial_upgrades_are_unsupported) to do this prior to installing any new packages), issue:
 ```
 [root@archb3 ~]# pacman -Syu
    (this will take some time to complete; confirm when prompted)
