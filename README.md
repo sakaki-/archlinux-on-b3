@@ -6,7 +6,7 @@ Bootable live-USB of Arch Linux for the Excito B3 miniserver (with [archlinuxarm
 This project contains a bootable, live-USB image for the Excito B3 miniserver. You can use it as a rescue disk, to play with Arch Linux, or as the starting point to install Arch Linux on your B3's main hard drive. You can even use it on a diskless B3. No soldering, compilation, or [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) flashing is required! You can run it without harming your B3's existing software; however, any changes you make while running the system *will* be saved to the USB (i.e., there is persistence).
 
 As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`.
-> For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This first kernel (whose version never changes) runs a script from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
+> For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This first kernel (whose version never changes) runs a [script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/initramfs-init-on-b3) from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)) carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
 
 The image may be downloaded from the link below (or via `wget`, per the following instructions).
 > Note that if you wish to use this image in a 'diskless' chassis, you will need to make a few small changes before booting, which are detailed later in these notes.
@@ -88,7 +88,7 @@ Obviously, substitute the appropriate path for `/dev/sdX1` in the above. If your
 ## Select Alternative Kernel (*Only* for B3s with no Hard Drive)
 
 Next, if (and **only** if) you are using a B3 without an internal hard drive fitted, you will need switch the kernel used on the USB key, or your Arch Linux system will fail to boot. 
-> Users of standard B3s (which have an internal hard drive, running the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel (and `fstab`) in place for you. Continue reading at "Booting!", below.
+> Users of standard B3s (which have an internal hard drive, running the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel (and `fstab`) in place for you. Continue reading at "Booting!", [below](#booting).
 
 Specifically, users of diskless B3s will need to:
 * rename the shipped kernel `/install/install.itb` (on the USB key's first partition) to something else (`/install/install_withdisk.itb`, for example); and then
@@ -113,7 +113,7 @@ You need only make these changes once. Assuming you are using Linux:
 
 Obviously, substitute the appropriate path for `/dev/sdX1` and `/dev/sdX3` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1` and `/dev/sdc3`; if it is on `/dev/sdd`, you'd use `/dev/sdd1` and `/dev/sdd3`, etc.
 
-## Booting!
+## <a name="booting"></a>Booting!
 
 All done, you are now ready to try booting your B3!
 
@@ -148,7 +148,7 @@ If you have previously connected to a *different* machine with the *same* IP add
 
 ## Using Arch Linux
 
-The supplied image contains a configured Arch Linux system, based on the `ArchLinuxARM-kirkwood-latest.tar.gz` image from the [archlinuxarm.org repo](http://archlinuxarm.org/os/), so you can immediately perform `pacman` operations (Arch Linux's equivalent of `apt-get`) etc. See the section "Keeping Your Arch Linux System Up-To-Date" near the end of this document.
+The supplied image contains a configured Arch Linux system, based on the `ArchLinuxARM-kirkwood-latest.tar.gz` image from the [archlinuxarm.org repo](http://archlinuxarm.org/os/), so you can immediately perform `pacman` operations (Arch Linux's equivalent of `apt-get`) etc. See the section ["Keeping Your Arch Linux System Up-To-Date"](#updating) near the end of this document.
 
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
@@ -230,7 +230,7 @@ Of course, use whatever IP address you assigned earlier, rather than `192.168.1.
 
 Once logged in, feel free to configure your system as you like! Of course, if you're intending to use the B3 as an externally visible server,  you should take the usual precautions, such as changing root's password, configuring a firewall, possibly [changing the `ssh` host keys](https://missingm.co/2013/07/identical-droplets-in-the-digitalocean-regenerate-your-ubuntu-ssh-host-keys-now/#how-to-generate-new-host-keys-on-an-existing-server), etc.
 
-## Keeping Your Arch Linux System Up-To-Date
+## <a name="updating"></a>Keeping Your Arch Linux System Up-To-Date
 
 You can update your system at any time (whether you are running Arch Linux from USB or the B3's internal drive). 
 
