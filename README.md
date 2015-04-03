@@ -132,7 +132,7 @@ About 20 seconds after the LED turns green in step 4, above, you should be able 
 
 Once booted, you can log into the B3 from any other machine on your subnet (the root password is **root**). Issue:
 ```
-> ssh root@192.168.1.129
+$ ssh root@192.168.1.129
 The authenticity of host '192.168.1.129 (192.168.1.129)' can't be established.
 ED25519 key fingerprint is 30:04:59:a6:cf:e6:bb:c2:ea:53:53:b3:2a:fa:88:d2.
 Are you sure you want to continue connecting (yes/no)? <type yes and press Enter>
@@ -173,7 +173,7 @@ To power off cleanly (rather than rebooting), you have two options. First, as th
 
 Second, if you'd rather use the command line, you can issue:
 ```
-b3 ~ # poweroff-b3
+[root@archb3 ~]# poweroff-b3
 ```
 which will have the same effect (and follow the same power-down LED sequence).
 
