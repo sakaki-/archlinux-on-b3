@@ -222,7 +222,7 @@ That's it! You can now try rebooting your new system (it will have the same init
 ```
 And let the system shut down and come back up. **Don't** press the B3's back-panel button this time. The system should boot directly off the hard drive. You can now remove the USB key, if you like, as it's no longer needed. Wait 40 seconds or so, then from your PC on the same subnet issue:
 ```
-> ssh root@192.168.1.129
+$ ssh root@192.168.1.129
 root@192.168.1.129's password: <type root and press Enter>
 [root@archb3 ~]# 
 ```
