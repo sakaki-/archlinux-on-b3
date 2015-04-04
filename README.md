@@ -185,7 +185,7 @@ Have fun! ^-^
 * The live USB works because the B3's firmware boot loader will automatically try to run a file called `/install/install.itb` from the first partition of the USB drive when the system is powered up with the rear button depressed. In the provided image, we have placed a bootable (interstitial) kernel uImage in that location. Despite the name, no 'installation' takes place, of course!
 * If you have a USB key larger than the minimum 4GB, after writing the image you can easily extend the size of the second partition (using `fdisk` and `resize2fs`), so you have more space to work in. See [these instructions](http://geekpeek.net/resize-filesystem-fdisk-resize2fs/), for example.
 
-## Installing Arch Linux on your B3's Internal Drive (Optional)
+## <a name="hdd_install">Installing Arch Linux on your B3's Internal Drive (Optional)
 
 If you like Arch Linux, and want to set it up permanently on the B3's internal hard drive, you can do so easily (it takes less than 5 minutes). The full process is described below. (Note, this is strictly optional, you can simply run Arch Linux from the USB key, if you are just experimenting, or using it as a rescue system.)
 
