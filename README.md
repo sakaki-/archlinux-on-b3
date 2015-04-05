@@ -88,7 +88,7 @@ Obviously, substitute the appropriate path for `/dev/sdX1` in the above. If your
 ## Select Alternative Kernel (*Only* for B3s with no Hard Drive)
 
 Next, if (and **only** if) you are using a B3 without an internal hard drive fitted, you will need switch the kernel used on the USB key, or your Arch Linux system will fail to boot. 
-> Users of standard B3s (which have an internal hard drive, running the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel (and `fstab`) in place for you. Continue reading at "Booting!", [below](#booting).
+> Users of standard B3s (which have an internal hard drive, running, for example, the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel (and `fstab`) in place for you. Continue reading at "Booting!", [below](#booting).
 
 Specifically, users of diskless B3s will need to:
 * rename the shipped kernel `/install/install.itb` (on the USB key's first partition) to something else (`/install/install_withdisk.itb`, for example); and then
