@@ -13,7 +13,7 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.1.2 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.1.3 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz.asc)
 
 The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
@@ -30,8 +30,8 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz.asc
 ```
 to fetch the compressed disk image file (146MiB) and its signature.
 
@@ -155,7 +155,11 @@ Be aware that, as shipped, it has a UTC timezone and no system locale; however, 
 The drivers for WiFi (if you have the hardware on your B3) *are* present, but configuration of WiFi in master mode (using hostapd) is beyond the scope of this short write up (see [here](http://nims11.wordpress.com/2012/04/27/hostapd-the-linux-way-to-create-virtual-wifi-access-point/) for some details). The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`.
 > You can use the `iwconfig` command to show the status of your wireless adaptors.
 
-Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility; see [these notes](https://wiki.archlinux.org/index.php/netctl) for example. There is also some useful information about `netctl`, bridging etc. on [this wiki page](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#The_netctl_way).
+Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility (`eth1`'s default controlling profile is called `lan` on the image); see [these notes](https://wiki.archlinux.org/index.php/netctl) for example. There is also some useful information about `netctl`, bridging etc. on [this wiki page](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#The_netctl_way).
+
+> Please be aware that, because the image uses `kexec` to boot the [archlinuxarm.org](http://archlinuxarm.org) kernel, the MACs of the ethernet adaptors (eth0 and eth1) are _not_ set by U-Boot, but by the `setethermac` service (see the file `/etc/systemd/system/setethermac@.service`). Accordingly, if you use a udev rule to change the names of these interfaces (as suggested [here](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#Prepare_Network_Interfaces), for example), their MACs will not be correctly initialized, and you may be unable to connect.
+
+> Similarly, if you define a `netctl` profile which references either `eth0` or `eth1` (and which is not called `wan` or `lan`), then please add that profile to the `Before=` dependency line in the `/etc/systemd/system/setethermac@.service` file.
 
 Once you have networking set up as you like it, you should issue:
 ```
