@@ -169,6 +169,14 @@ Once you have networking set up as you like it, you should issue:
 ```
 to prevent your `wan` settings being overwritten again by the file in the first USB partition, next time you boot.
 
+You can change your B3's hostname if you like; for example, to change it to 'hana' (and to reflect the change immediately), issue:
+```
+[root@archb3 ~]# hostnamectl set-hostname hana
+[root@archb3 ~]# exec bash --login
+[root@hana ~]#
+```
+
+
 When you are done using your Arch Linux system, you can simply issue:
 ```
 [root@archb3 ~]# systemctl reboot
