@@ -128,6 +128,8 @@ About 20 seconds after the LED turns green in step 4, above, you should be able 
 
 > The image uses a solid green LED as its 'normal' state, so that you can easily tell at a glance whether your B3 is running an Excito/Debian system (blue LED) or a Arch Linux one (green LED).
 
+> Also, please note that if you have installed Arch Linux to your internal HDD (per the instructions given [later](#hdd_install)), and are booting from the HDD, that the front LED will be **purple**, not green, during phase 1.
+
 ## Connecting to the B3
 
 Once booted, you can log into the B3 from any other machine on your subnet (the root password is **root**). Issue:
