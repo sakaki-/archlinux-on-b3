@@ -281,6 +281,8 @@ However, you do not need to worry, as the interstitial kernel's `init` will take
 
 For more information about Arch Linux setup, see the official [Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide). Useful notes about system maintenance on Arch Linux are also available [here](https://wiki.archlinux.org/index.php/System_maintenance).
 
+Some further information may also be found on this project's (open) [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki): please feel free to edit or contribute articles of your own!
+
 ## Feedback Welcome!
 
 If you have any problems, questions or comments regarding this project, feel free to drop me a line! (sakaki@deciban.com)
