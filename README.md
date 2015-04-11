@@ -154,7 +154,7 @@ The supplied image contains a configured Arch Linux system, based on the `ArchLi
 
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
-The drivers for WiFi (if you have the hardware on your B3) *are* present. The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`. Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility (`eth1`'s default controlling profile is called `lan` on the image); see [these notes](https://wiki.archlinux.org/index.php/netctl) for example.
+The drivers for WiFi (if you have the hardware on your B3) *are* present, but WiFi is not initially set to come up on boot. The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`. Similarly, the **lan** port can be accessed via `eth1`, and is not initially set to come up on boot either. You can modify the behaviour as you like using the `netctl` utility (`eth1`'s default controlling profile is called `lan` on the image); see [these notes](https://wiki.archlinux.org/index.php/netctl) for example.
 > You can use the `iwconfig` command to show the status of your wireless adaptors.
 
 A short guide to setting up the B3 as a "Router+Firewall+Server", for the configuration shown below, may be found [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) in this project's [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki):
