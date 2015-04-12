@@ -209,7 +209,7 @@ If you like Arch Linux, and want to set it up permanently on the B3's internal h
 * /dev/sda2 as a 1GiB swap partition;
 * /dev/sda3 as a root partition using the rest of the drive, and format it `ext4`.
 
-> Note also that the script `/root/install_on_sda.sh` will install using a DOS partition table (max 2TiB); if you'd rather use GPT, then use `/root/install_on_sda_gpt.sh` instead. [All B3s](http://forum.mybubba.org/viewtopic.php?f=7&t=5755) can boot from a GPT-partitioned drive; however, please note that if your HDD has a capacity > 2TiB, then only those B3s with a [relatively modern](http://forum.mybubba.org/viewtopic.php?f=9&t=5745) U-Boot will work correctly. The DOS partition table version should work for any size drive (but will be constrained to a maximum of 2TiB).
+> Note also that the script [`/root/install_on_sda.sh`](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/install_on_sda.sh) will install using a DOS partition table (max 2TiB); if you'd rather use GPT, then use [`/root/install_on_sda_gpt.sh`](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/install_on_sda_gpt.sh) instead. [All B3s](http://forum.mybubba.org/viewtopic.php?f=7&t=5755) can boot from a GPT-partitioned drive; however, please note that if your HDD has a capacity > 2TiB, then only those B3s with a [relatively modern](http://forum.mybubba.org/viewtopic.php?f=9&t=5745) U-Boot will work correctly. The DOS partition table version should work for any size drive (but will be constrained to a maximum of 2TiB).
 
 OK, first, boot into the image and then connect to your B3 via `ssh`, as described above. Then, (as of version 1.1.0) you can simply run the supplied script to install onto your hard drive:
 ```
