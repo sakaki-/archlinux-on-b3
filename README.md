@@ -13,7 +13,7 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.1.2 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.1.3 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz.asc)
 
 The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
@@ -22,7 +22,7 @@ The older images are still available [here](https://github.com/sakaki-/archlinux
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 146MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 144MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As shipped, the image assumes you have an internal hard drive fitted; if using a diskless chassis, be sure to follow the instructions given later, before attempting to boot.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -30,10 +30,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.2/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.3/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (146MiB) and its signature.
+to fetch the compressed disk image file (144MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
@@ -72,7 +72,7 @@ DNS=('8.8.8.8')
 SkipNoCarrier=yes
 ```
 
-That is, as shipped, the Arch Linux system will attempt to bring up the eth0 (**wan**) Ethernet interface, with a fixed address of 192.168.1.129 (NB - this is different from the default [gentoo-on-b3](https://github.com/sakaki-/gentoo-on-b3) address), netmask 255.255.255.0 (the '/24' in Address = 24 bits of mask), broadcast address 192.168.1.255 (implied) and gateway 192.168.1.254, using Google's DNS nameserver at 8.8.8.8. If these settings are not appropriate for your network, edit this file as required (note that you will have to specify a fixed address at this stage; later, when you are logged into the system, you can configure DHCP etc. if desired). The first USB partition is formatted `fat16` and so the edits can be made on any Windows box; or, if using Linux:
+That is, as shipped, the Arch Linux system will attempt to bring up the eth0 (**wan**) Ethernet interface, with a fixed address of 192.168.1.129 (NB - this is different from the default [gentoo-on-b3](https://github.com/sakaki-/gentoo-on-b3) address), netmask 255.255.255.0 (the '/24' in Address = 24 bits of mask), broadcast address 192.168.1.255 (implied) and gateway 192.168.1.254, using Google's DNS nameserver at 8.8.8.8. If these settings are not appropriate for your network, edit this file as required (note that you will have to specify a fixed address at this stage; later, when you are logged into the system, you can configure DHCP etc. if desired). The first USB partition is formatted `fat16` and so the edits can be made on any Windows box (any [modified line endings](https://danielmiessler.com/study/crlf/) will be fixed up automatically, when the files are copied across during boot); or, if using Linux:
 ```
 # mkdir /tmp/mntusb
 # mount -v /dev/sdX1 /tmp/mntusb
@@ -128,6 +128,8 @@ About 20 seconds after the LED turns green in step 4, above, you should be able 
 
 > The image uses a solid green LED as its 'normal' state, so that you can easily tell at a glance whether your B3 is running an Excito/Debian system (blue LED) or a Arch Linux one (green LED).
 
+> Also, please note that if you have installed Arch Linux to your internal HDD (per the instructions given [later](#hdd_install)), and are booting from the HDD, that the front LED will be **purple**, not green, during phase 1.
+
 ## Connecting to the B3
 
 Once booted, you can log into the B3 from any other machine on your subnet (the root password is **root**). Issue:
@@ -152,16 +154,29 @@ The supplied image contains a configured Arch Linux system, based on the `ArchLi
 
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
-The drivers for WiFi (if you have the hardware on your B3) *are* present, but configuration of WiFi in master mode (using hostapd) is beyond the scope of this short write up (see [here](http://nims11.wordpress.com/2012/04/27/hostapd-the-linux-way-to-create-virtual-wifi-access-point/) for some details). The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`.
+The drivers for WiFi (if you have the hardware on your B3) *are* present, but WiFi is not initially set to come up on boot. The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`. Similarly, the **lan** port can be accessed via `eth1`, and is not initially set to come up on boot either. You can modify the behaviour as you like using the `netctl` utility (`eth1`'s default controlling profile is called `lan` on the image); see [these notes](https://wiki.archlinux.org/index.php/netctl) for example.
 > You can use the `iwconfig` command to show the status of your wireless adaptors.
 
-Similarly, the **lan** port can be accessed via `eth1`, but is not currently set to come up on boot. You can modify the behaviour as you like using the `netctl` utility; see [these notes](https://wiki.archlinux.org/index.php/netctl) for example. There is also some useful information about `netctl`, bridging etc. on [this wiki page](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#The_netctl_way).
+A short guide to setting up the B3 as a "Router+Firewall+Server", for the configuration shown below, may be found [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) in this project's [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki):
+![B3 as WiFi Gateway Server](https://raw.githubusercontent.com/sakaki-/resources/master/excito/b3/b3_gateway_server.png)
+
+> Please be aware that, because the image uses `kexec` to boot the [archlinuxarm.org](http://archlinuxarm.org) kernel, the MACs of the ethernet adaptors (eth0 and eth1) are _not_ set by U-Boot, but by the `setethermac` service (see the file `/etc/systemd/system/setethermac@.service`). Accordingly, if you use a udev rule to change the names of these interfaces (as suggested [here](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#Prepare_Network_Interfaces), for example), their MACs will not be correctly initialized, and you may be unable to connect.
+
+> Similarly, if you define a `netctl` profile which references either `eth0` or `eth1` (and which is not called `wan` or `lan`), then please add that profile to the `Before=` dependency line in the `/etc/systemd/system/setethermac@.service` file.
 
 Once you have networking set up as you like it, you should issue:
 ```
 [root@archb3 ~]# systemctl disable copynetsetup 
 ```
 to prevent your `wan` settings being overwritten again by the file in the first USB partition, next time you boot.
+
+You can change your B3's hostname if you like; for example, to change it to 'hana' (and to reflect the change immediately), issue:
+```
+[root@archb3 ~]# hostnamectl set-hostname hana
+[root@archb3 ~]# exec bash --login
+[root@hana ~]#
+```
+
 
 When you are done using your Arch Linux system, you can simply issue:
 ```
@@ -194,7 +209,7 @@ If you like Arch Linux, and want to set it up permanently on the B3's internal h
 * /dev/sda2 as a 1GiB swap partition;
 * /dev/sda3 as a root partition using the rest of the drive, and format it `ext4`.
 
-> Note also that the script `/root/install_on_sda.sh` will install using a DOS partition table (max 2TiB); if you'd rather use GPT, then use `/root/install_on_sda_gpt.sh` instead. [All B3s](http://forum.mybubba.org/viewtopic.php?f=7&t=5755) can boot from a GPT-partitioned drive; however, please note that if your HDD has a capacity > 2TiB, then only those B3s with a [relatively modern](http://forum.mybubba.org/viewtopic.php?f=9&t=5745) U-Boot will work correctly. The DOS partition table version should work for any size drive (but will be constrained to a maximum of 2TiB).
+> Note also that the script [`/root/install_on_sda.sh`](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/install_on_sda.sh) will install using a DOS partition table (max 2TiB); if you'd rather use GPT, then use [`/root/install_on_sda_gpt.sh`](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/install_on_sda_gpt.sh) instead. [All B3s](http://forum.mybubba.org/viewtopic.php?f=7&t=5755) can boot from a GPT-partitioned drive; however, please note that if your HDD has a capacity > 2TiB, then only those B3s with a [relatively modern](http://forum.mybubba.org/viewtopic.php?f=9&t=5745) U-Boot will work correctly. The DOS partition table version should work for any size drive (but will be constrained to a maximum of 2TiB).
 
 OK, first, boot into the image and then connect to your B3 via `ssh`, as described above. Then, (as of version 1.1.0) you can simply run the supplied script to install onto your hard drive:
 ```
@@ -266,6 +281,8 @@ Note that this may also upgrade your kernel, if a new version has become availab
 However, you do not need to worry, as the interstitial kernel's `init` will take care of this "further user action" for you. Simply reboot, and you'll be using your new kernel!
 
 For more information about Arch Linux setup, see the official [Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide). Useful notes about system maintenance on Arch Linux are also available [here](https://wiki.archlinux.org/index.php/System_maintenance).
+
+Some further information may also be found on this project's (open) [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki): please feel free to edit or contribute articles of your own!
 
 ## Feedback Welcome!
 
