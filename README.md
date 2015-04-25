@@ -57,7 +57,7 @@ The above `xzcat` to the USB key will take some time, due to the decompression (
 
 ## Specifying Required Network Settings
 
-The Archlinux system on the image will setup the `eth0` network interface on boot (this uses the **wan** Ethernet port on the B3). However, before networking is started, it will attempt to read a file from the first partition of the USB key, namely `/install/wan`; if found, this will be used to *overwrite* the file `/etc/netctl/wan` on the USB root (in the USB key's second partition). Therefore, you can edit this file to specify settings appropriate for your network.
+The Archlinux system on the image will setup the `eth0` network interface on boot (this uses the **wan** Ethernet port on the B3). However, before networking is started, it will attempt to read a file from the first partition of the USB key, namely `/install/wan`; if found, this will be used to *overwrite* the file `/etc/netctl/wan` on the USB root (in the USB key's third partition). Therefore, you can edit this file to specify settings appropriate for your network.
 
 In the image, `/install/wan` initially contains:
 > 
@@ -93,7 +93,7 @@ Next, if (and **only** if) you are using a B3 without an internal hard drive fit
 Specifically, users of diskless B3s will need to:
 * rename the shipped kernel `/install/install.itb` (on the USB key's first partition) to something else (`/install/install_withdisk.itb`, for example); and then
 * rename the supplied `/install/install_diskless.itb` to `/install/install.itb`; and then
-* modify the `/etc/fstab` file (on the USB key's second partition), so that the correct drive is specified.
+* modify the `/etc/fstab` file (on the USB key's third partition), so that the correct drive is specified.
 
 You need only make these changes once. Assuming you are using Linux:
 ```
@@ -198,7 +198,7 @@ Have fun! ^-^
 
 * The specific B3 devices (LEDs, buzzer, rear button etc.) are now described by the file `arch/arm/boot/dts/kirkwood-b3.dts` in the main kernel source directory (and included in the git archive too, for reference). You can see an example of using the defined devices in `/etc/systemd/system/bootled.service`, which turns on the green LED as Arch Linux starts up, and off again on shutdown (this replaces the previous [approach](http://wiki.mybubba.org/wiki/index.php?title=Let_your_B3_beep_and_change_the_LED_color), which required an Excito-patched kernel).
 * The live USB works because the B3's firmware boot loader will automatically try to run a file called `/install/install.itb` from the first partition of the USB drive when the system is powered up with the rear button depressed. In the provided image, we have placed a bootable (interstitial) kernel uImage in that location. Despite the name, no 'installation' takes place, of course!
-* If you have a USB key larger than the minimum 4GB, after writing the image you can easily extend the size of the second partition (using `fdisk` and `resize2fs`), so you have more space to work in. See [these instructions](http://geekpeek.net/resize-filesystem-fdisk-resize2fs/), for example.
+* If you have a USB key larger than the minimum 4GB, after writing the image you can easily extend the size of the third partition (using `fdisk` and `resize2fs`), so you have more space to work in. See [these instructions](http://geekpeek.net/resize-filesystem-fdisk-resize2fs/), for example.
 
 ## <a name="hdd_install">Installing Arch Linux on your B3's Internal Drive (Optional)
 
