@@ -284,6 +284,8 @@ For more information about Arch Linux setup, see the official [Beginners' Guide]
 
 Some further information may also be found on this project's (open) [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki): please feel free to edit or contribute articles of your own!
 
+You may also find it useful to keep an eye on the 'Development' forum at [mybubba.org](http://forum.mybubba.org/index.php), as I occasionally post information about this live-USB there.
+
 ## Feedback Welcome!
 
 If you have any problems, questions or comments regarding this project, feel free to drop me a line! (sakaki@deciban.com)
