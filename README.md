@@ -8,6 +8,8 @@ This project contains a bootable, live-USB image for the Excito B3 miniserver. Y
 As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`.
 > For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This first kernel (whose version never changes) runs a [script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/initramfs-init-on-b3) from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)) carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
 
+> **Important:** please read [this note](https://github.com/sakaki-/archlinux-on-b3/wiki/WiFi-Issue-with-Kernel-4.0) about issues affecting the PCIe bus (and therefore, WiFi) in the 4.0-1 kernel.
+
 The image may be downloaded from the link below (or via `wget`, per the following instructions).
 > Note that if you wish to use this image in a 'diskless' chassis, you will need to make a few small changes before booting, which are detailed later in these notes.
 
