@@ -8,23 +8,24 @@ This project contains a bootable, live-USB image for the Excito B3 miniserver. Y
 As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`.
 > For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This first kernel (whose version never changes) runs a [script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/initramfs-init-on-b3) from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)) carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
 
-> **Important:** please read [this note](https://github.com/sakaki-/archlinux-on-b3/wiki/WiFi-Issue-with-Kernel-4.0) about issues affecting the PCIe bus (and therefore, WiFi) in the 4.0-1 kernel.
-
 The image may be downloaded from the link below (or via `wget`, per the following instructions).
 > Note that if you wish to use this image in a 'diskless' chassis, you will need to make a few small changes before booting, which are detailed later in these notes.
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.1.4 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.4/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.4/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.1.5 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.5/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.5/archb3img.xz.asc)
 
 The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
 > Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 29 March 2015), please refer to that site for licensing details of firmware files etc.
 
+> **Important:** the PCIe / WiFi regression detailed in [this note](https://github.com/sakaki-/archlinux-on-b3/wiki/WiFi-Issue-with-Kernel-4.0) and affecting the 4.0-1 kernel has now been patched by archlinuxarm; as a result, you may once again safely upgrade your kernel as part of the `pacman -Syu` process. Users of version >= 1.1.5 need do nothing (as kernel upgrading is enabled by default); users of previous releases should see the [notes to the 1.1.5 release](https://github.com/sakaki-/archlinux-on-b3/releases/tag/1.1.5) for further information.
+
+
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 144MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 148MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As shipped, the image assumes you have an internal hard drive fitted; if using a diskless chassis, be sure to follow the instructions given later, before attempting to boot.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -32,10 +33,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.4/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.4/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.5/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.5/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (144MiB) and its signature.
+to fetch the compressed disk image file (148MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
