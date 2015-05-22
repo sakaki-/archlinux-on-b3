@@ -19,9 +19,6 @@ The older images are still available [here](https://github.com/sakaki-/archlinux
 
 > Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 29 March 2015), please refer to that site for licensing details of firmware files etc.
 
-> **Important:** the PCIe / WiFi regression detailed in [this note](https://github.com/sakaki-/archlinux-on-b3/wiki/WiFi-Issue-with-Kernel-4.0) and affecting the 4.0-1 kernel has now been patched by archlinuxarm; as a result, you may once again safely upgrade your kernel as part of the `pacman -Syu` process. Users of version >= 1.1.5 need do nothing (as kernel upgrading is enabled by default); users of previous releases should see the [notes to the 1.1.5 release](https://github.com/sakaki-/archlinux-on-b3/releases/tag/1.1.5) for further information.
-
-
 ## Prerequisites
 
 To try this out, you will need:
