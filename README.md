@@ -17,7 +17,7 @@ B3 with or without Internal Drive | 1.1.5 | [archb3img.xz](https://github.com/sa
 
 The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 29 March 2015), please refer to that site for licensing details of firmware files etc.
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 1 May 2015), please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
