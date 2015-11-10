@@ -72,8 +72,8 @@ cp -ax /boot/kirkwood-b3.dtb /mnt/sdaboot/ >>"${LOG}" 2>&1
 cp -ax /root/root-on-sda3-kernel/kexec.sh /mnt/sdaboot/ >>"${LOG}" 2>&1
 # and this is the kernel that will be initially booted...
 cp -ax /root/root-on-sda3-kernel/{uImage,config} /mnt/sdaboot/boot/ >>"${LOG}" 2>&1
-cp -ax /bin /dev /etc /lib /root /sbin /srv /tmp /usr /var /mnt/sdaroot/ >>"${LOG}" 2>&1
-mkdir -p /mnt/sdaroot/{boot,home,mnt,opt,proc,run,sys} >>"${LOG}" 2>&1
+cp -ax /bin /dev /etc /lib /opt /root /sbin /srv /tmp /usr /var /mnt/sdaroot/ >>"${LOG}" 2>&1
+mkdir -p /mnt/sdaroot/{boot,home,mnt,proc,run,sys} >>"${LOG}" 2>&1
 cp /root/fstab-on-b3 /mnt/sdaroot/etc/fstab >>"${LOG}" 2>&1
 
 echo "Step 5 of 5: syncing filesystems and unmounting..."
