@@ -13,16 +13,16 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.1.6 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.6/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.6/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.2.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz.asc)
 
 The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 1 May 2015), please refer to that site for licensing details of firmware files etc.
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 10 November 2015), please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 148MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 155MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As shipped, the image assumes you have an internal hard drive fitted; if using a diskless chassis, be sure to follow the instructions given later, before attempting to boot.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -30,10 +30,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.6/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.1.6/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (148MiB) and its signature.
+to fetch the compressed disk image file (155MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
@@ -54,36 +54,6 @@ Next, insert (into your Linux box) the USB key on which you want to install the 
 Substitute the actual USB key device path, for example `/dev/sdc`, for `/dev/sdX` in the above command. Make sure to reference the device, **not** a partition within it (so e.g., `/dev/sdc` and not `/dev/sdc1`; `/dev/sdd` and not `/dev/sdd1` etc.)
 
 The above `xzcat` to the USB key will take some time, due to the decompression (it takes between 5 and 15 minutes on my machine, depending on the USB key used). It should exit cleanly when done - if you get a message saying 'No space left on device', then your USB key is too small for the image, and you should try again with a larger capacity one.
-
-## Specifying Required Network Settings
-
-The Archlinux system on the image will setup the `eth0` network interface on boot (this uses the **wan** Ethernet port on the B3). However, before networking is started, it will attempt to read a file from the first partition of the USB key, namely `/install/wan`; if found, this will be used to *overwrite* the file `/etc/netctl/wan` on the USB root (in the USB key's third partition). Therefore, you can edit this file to specify settings appropriate for your network.
-
-In the image, `/install/wan` initially contains:
-> 
-```
-Description='WAN Port on B3'
-Interface=eth0
-Connection=ethernet
-IP=static
-Address=('192.168.1.129/24')
-Gateway='192.168.1.254'
-DNS=('8.8.8.8')
-SkipNoCarrier=yes
-```
-
-That is, as shipped, the Arch Linux system will attempt to bring up the eth0 (**wan**) Ethernet interface, with a fixed address of 192.168.1.129 (NB - this is different from the default [gentoo-on-b3](https://github.com/sakaki-/gentoo-on-b3) address), netmask 255.255.255.0 (the '/24' in Address = 24 bits of mask), broadcast address 192.168.1.255 (implied) and gateway 192.168.1.254, using Google's DNS nameserver at 8.8.8.8. If these settings are not appropriate for your network, edit this file as required (note that you will have to specify a fixed address at this stage; later, when you are logged into the system, you can configure DHCP etc. if desired). The first USB partition is formatted `fat16` and so the edits can be made on any Windows box (any [modified line endings](https://danielmiessler.com/study/crlf/) will be fixed up automatically, when the files are copied across during boot); or, if using Linux:
-```
-# mkdir /tmp/mntusb
-# mount -v /dev/sdX1 /tmp/mntusb
-# nano -w /tmp/mntusb/install/wan
-  <make changes as needed, and save>
-# sync
-# umount -v /tmp/mntusb
-# rmdir /tmp/mntusb
-```
-
-Obviously, substitute the appropriate path for `/dev/sdX1` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1`; if it is on `/dev/sdd`, you'd use `/dev/sdd1`, etc.
 
 ## Select Alternative Kernel (*Only* for B3s with no Hard Drive)
 
@@ -115,9 +85,7 @@ Obviously, substitute the appropriate path for `/dev/sdX1` and `/dev/sdX3` in th
 
 ## <a name="booting"></a>Booting!
 
-All done, you are now ready to try booting your B3!
-
-Begin with your B3 powered off and the power cable removed. Insert the USB key into either of the USB slots on the back of the B3, and make sure the other USB slot is unoccupied. Connect the B3 to your local network using the **wan** Ethernet port. Then, *while holding down the button on the back of the B3*, apply power (insert the power cable). After five seconds or so, release the button. If all is well, the B3 should boot the interstitial kernel off of the USB key (rather than the internal drive), then patch, load and `kexec` the archlinuxarm.org kernel, and then proceed to mount the root partition (also from the USB key) and start Arch Linux. This will all take about 60 seconds or so. The LED on the front of the B3 should:
+Begin with your B3 powered off and the power cable removed. Insert the USB key into either of the USB slots on the back of the B3, and make sure the other USB slot is unoccupied. Connect your B3 into your local network (or directly to your ADSL router, cable modem etc., if you wish) using the **wan** Ethernet port. Then, *while holding down the button on the back of the B3*, apply power (insert the power cable). After five seconds or so, release the button. If all is well, the B3 should boot the interstitial kernel off of the USB key (rather than the internal drive), then patch, load and `kexec` the archlinuxarm.org kernel, and then proceed to mount the root partition (also from the USB key) and start Arch Linux. This will all take about 60 seconds or so. The LED on the front of the B3 should:
 
 1. first, turn **green**, for about 20 seconds, as the interstitial kernel loads; then,
 1. turn **off** for about 10 seconds, and the 'real' kernel is patched and loaded; then
@@ -132,21 +100,27 @@ About 20 seconds after the LED turns green in step 4, above, you should be able 
 
 ## Connecting to the B3
 
-Once booted, you can log into the B3 from any other machine on your subnet (the root password is **root**). Issue:
+Once booted, you can log into the B3 as follows.
+
+First, connect your client PC (or Mac etc.) to the **lan** Ethernet port of your B3 (you can use a regular Ethernet cable for this, the B3's ports are autosensing). Alternatively, if you have a WiFi enabled B3, you can connect to the "b3" WiFi network which should now be visible (the passphrase is **changeme**).
+
+Then, on your client PC, issue:
 ```
-$ ssh root@192.168.1.129
-The authenticity of host '192.168.1.129 (192.168.1.129)' can't be established.
-ED25519 key fingerprint is 30:04:59:a6:cf:e6:bb:c2:ea:53:53:b3:2a:fa:88:d2.
+$ ssh root@archb3
+The authenticity of host 'archb3 (192.168.50.1)' can't be established.
+ED25519 key fingerprint is 0c:b5:1c:66:19:8a:dc:81:0e:dc:1c:f5:25:57:7e:66.
 Are you sure you want to continue connecting (yes/no)? <type yes and press Enter>
-Warning: Permanently added '192.168.1.129' (ED25519) to the list of known hosts.
-root@192.168.1.129's password: <type root and press Enter>
+Warning: Permanently added 'archb3,192.168.50.1' (ED25519) to the list of known hosts.
+Password: <type root and press Enter>
 [root@archb3 ~]# 
 ```
-and you're in!  (If you get `connection refused`, simply wait a few seconds longer, then try again.) Obviously, substitute the correct network address for your B3 in the command above (if you changed it in `/install/wan`, earlier). Note that you may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
+and you're in! You may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
 
-> **Important:** if you have changed the settings in `/install/wan`, and are unable to log in the first time (even though your B3 appears to have booted OK), try powering off your B3 (hold down the rear button for about 5 seconds, and wait for the front LED to turn off). Then, boot from the USB (with the rear button held down) one further time. You should find that your changed settings have now been accepted, and you can `ssh` in successfully. (Incidentally, the race condition that caused this issue has been addressed as of release 1.1.1.)
+> If you have trouble with `ssh root@archb3`, you can also try using `ssh root@192.168.50.1` instead.
 
 If you have previously connected to a *different* machine with the *same* IP address as your B3 via `ssh` from the client PC, you may need to delete its host fingerprint (from `~/.ssh/known_hosts` on the PC) before `ssh` will allow you to connect.
+
+> Incidentally, you should also be able to browse the web etc. from your client (assuming that you connected the B3's `wan` port prior to boot), because the image has a forwarding `shorewall` firewall setup, as of version 1.2.0.
 
 ## Using Arch Linux
 
@@ -154,21 +128,14 @@ The supplied image contains a configured Arch Linux system, based on the `ArchLi
 
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
-The drivers for WiFi (if you have the hardware on your B3) *are* present, but WiFi is not initially set to come up on boot. The wifi interface name is `wlp1s0`, and the wireless regulatory domain (`/etc/conf.d/wireless-regdom`) is currently set to `GB`. Similarly, the **lan** port can be accessed via `eth1`, and is not initially set to come up on boot either. You can modify the behaviour as you like using the `netctl` utility (`eth1`'s default controlling profile is called `lan` on the image); see [these notes](https://wiki.archlinux.org/index.php/netctl) for example.
-> You can use the `iwconfig` command to show the status of your wireless adaptors.
+The initial networking setup of the live-USB is as follows (patterned on the setup laid out in my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server)):
 
-A short guide to setting up the B3 as a "Router+Firewall+Server", for the configuration shown below, may be found [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) in this project's [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki):
-![B3 as WiFi Gateway Server](https://raw.githubusercontent.com/sakaki-/resources/master/excito/b3/b3_gateway_server.png)
+![Initial B3 Networking Setup](https://raw.githubusercontent.com/sakaki-/resources/master/excito/b3/arch_b3_initial_networking_setup.png)
+
+Feel free to change this as desired.
+> If you have used previous versions of this live-USB, please note that the initial networking setup has changed. There is no need to specify the `/install/wan` file, and the `copynetsetup` service is now disabled.
 
 > Please be aware that, because the image uses `kexec` to boot the [archlinuxarm.org](http://archlinuxarm.org) kernel, the MACs of the ethernet adaptors (eth0 and eth1) are _not_ set by U-Boot, but by the `setethermac` service (see the file `/etc/systemd/system/setethermac@.service`). Accordingly, if you use a udev rule to change the names of these interfaces (as suggested [here](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#Prepare_Network_Interfaces), for example), their MACs will not be correctly initialized, and you may be unable to connect.
-
-> Similarly, if you define a `netctl` profile which references either `eth0` or `eth1` (and which is not called `wan` or `lan`), then please add that profile to the `Before=` dependency line in the `/etc/systemd/system/setethermac@.service` file.
-
-Once you have networking set up as you like it, you should issue:
-```
-[root@archb3 ~]# systemctl disable copynetsetup 
-```
-to prevent your `wan` settings being overwritten again by the file in the first USB partition, next time you boot.
 
 You can change your B3's hostname if you like; for example, to change it to 'hana' (and to reflect the change immediately), issue:
 ```
@@ -176,7 +143,7 @@ You can change your B3's hostname if you like; for example, to change it to 'han
 [root@archb3 ~]# exec bash --login
 [root@hana ~]#
 ```
-
+If you do change the hostname, remember to reflect it also in the `/etc/hosts` file.
 
 When you are done using your Arch Linux system, you can simply issue:
 ```
@@ -198,6 +165,10 @@ Have fun! ^-^
 
 * The specific B3 devices (LEDs, buzzer, rear button etc.) are now described by the file `arch/arm/boot/dts/kirkwood-b3.dts` in the main kernel source directory (and included in the git archive too, for reference). You can see an example of using the defined devices in `/etc/systemd/system/bootled.service`, which turns on the green LED as Arch Linux starts up, and off again on shutdown (this replaces the previous [approach](http://wiki.mybubba.org/wiki/index.php?title=Let_your_B3_beep_and_change_the_LED_color), which required an Excito-patched kernel).
 * The live USB works because the B3's firmware boot loader will automatically try to run a file called `/install/install.itb` from the first partition of the USB drive when the system is powered up with the rear button depressed. In the provided image, we have placed a bootable (interstitial) kernel uImage in that location. Despite the name, no 'installation' takes place, of course!
+* As of version 1.7.0, the `shorewall` firewall (front-end) is included and enabled. If you wish to run e.g. a web server on your B3, please remember to add the appropriate firewall rules (see my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) for some further information).
+ * Please note that the firewall, as initially configured, will allow `ssh` traffic on the `wan` port also. Note also that `sshd` (see `/etc/ssh/ssdh_config`) is initially configured to _allow_ password-based login for `root` (you may wish to change this, once you have created at least one regular user with the ability to `su` to `root`).
+* If you have a WiFi-enabled B3, the corresponding network interface is named `wlan0` (there is a `udev` rule that does this, namely `/etc/udev/rules.d/70-net-name-use-custom.rules`). Please note that this rule will **not** work correctly if you have more than one WiFi adaptor on your B3 (an unusual case).
+* The WiFi settings are controlled by `hostapd`, and my be modified by editing `/etc/hostapd.conf`. I recommend that you at least change the passphrase (if you have a WiFi-enabled B3)!
 * If you have a USB key larger than the minimum 4GB, after writing the image you can easily extend the size of the third partition (using `fdisk` and `resize2fs`), so you have more space to work in. See [these instructions](http://geekpeek.net/resize-filesystem-fdisk-resize2fs/), for example.
 
 ## <a name="hdd_install">Installing Arch Linux on your B3's Internal Drive (Optional)
@@ -235,13 +206,13 @@ That's it! You can now try rebooting your new system (it will have the same init
 ```
 [root@archb3 ~]# systemctl reboot
 ```
-And let the system shut down and come back up. **Don't** press the B3's back-panel button this time. The system should boot directly off the hard drive. You can now remove the USB key, if you like, as it's no longer needed. Wait 40 seconds or so, then from your PC on the same subnet issue:
+And let the system shut down and come back up. **Don't** press the B3's back-panel button this time. The system should boot directly off the hard drive. You can now remove the USB key, if you like, as it's no longer needed. Wait 40 seconds or so, then from your PC on the same subnet (via the B3's `lan` or WiFi interfaces) issue:
 ```
-$ ssh root@192.168.1.129
-root@192.168.1.129's password: <type root and press Enter>
+$ ssh root@archb3
+Password: <type root and press Enter>
 [root@archb3 ~]# 
 ```
-Of course, use whatever IP address you assigned earlier, rather than `192.168.1.129` in the above. Also, if you changed root's password in the USB image, use that new password rather than `root` in the above.
+Of course, if you changed root's password in the USB image, use that new password rather than `root` in the above.
 
 Once logged in, feel free to configure your system as you like! Of course, if you're intending to use the B3 as an externally visible server,  you should take the usual precautions, such as changing root's password, configuring a firewall, possibly [changing the `ssh` host keys](https://missingm.co/2013/07/identical-droplets-in-the-digitalocean-regenerate-your-ubuntu-ssh-host-keys-now/#how-to-generate-new-host-keys-on-an-existing-server), etc.
 
@@ -284,7 +255,7 @@ For more information about Arch Linux setup, see the official [Beginners' Guide]
 
 Some further information may also be found on this project's (open) [wiki](https://github.com/sakaki-/archlinux-on-b3/wiki): please feel free to edit or contribute articles of your own!
 
-You may also find it useful to keep an eye on the 'Development' forum at [mybubba.org](http://forum.mybubba.org/index.php), as I occasionally post information about this live-USB there.
+You may also find it useful to keep an eye on the 'Development' forum at [excito.com](http://forum.excito.com/index.php), as I occasionally post information about this live-USB there.
 
 ## Feedback Welcome!
 
