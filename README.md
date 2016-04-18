@@ -26,6 +26,8 @@ To try this out, you will need:
 * An Excito B3 (obviously!). As shipped, the image assumes you have an internal hard drive fitted; if using a diskless chassis, be sure to follow the instructions given later, before attempting to boot.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
+> Incidentally, I also have a [Gentoo Linux](https://www.gentoo.org/) live USB for the B3, available [here](https://github.com/sakaki-/gentoo-on-b3); a [RedSleeve](https://en.wikipedia.org/wiki/RedSleeve) v7 live USB for the B3, available [here](https://github.com/sakaki-/redsleeve-on-b3); and a Gentoo Linux live USB for the B2, available [here](https://github.com/sakaki-/gentoo-on-b2).
+
 ## Downloading and Writing the Image
 
 On your Linux box, issue:
