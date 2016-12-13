@@ -230,7 +230,7 @@ To bring your package metadata up-to-date (similar to `apt-get update` in Debian
    (confirm if prompted)
 ```
 
-To install / upgrade a particular package (such as e.g., the apache web server), you can issue (equivalent to `apt-get upgrade ...` on Debian):
+To install / upgrade a particular package (such as e.g., the apache web server), you can issue (equivalent to `apt-get install ...` on Debian):
 ```
 [root@archb3 ~]# pacman -S apache
    (confirm when prompted)
