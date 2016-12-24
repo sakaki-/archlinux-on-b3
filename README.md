@@ -6,23 +6,22 @@ Bootable live-USB of Arch Linux for the Excito B3 miniserver (with [archlinuxarm
 This project contains a bootable, live-USB image for the Excito B3 miniserver. You can use it as a rescue disk, to play with Arch Linux, or as the starting point to install Arch Linux on your B3's main hard drive. You can even use it on a diskless B3. No soldering, compilation, or [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) flashing is required! You can run it without harming your B3's existing software; however, any changes you make while running the system *will* be saved to the USB (i.e., there is persistence).
 
 As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`.
-> For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This first kernel (whose version never changes) runs a [script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/initramfs-init-on-b3) from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)) carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
+> For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This interstitial kernel (whose version never changes) runs a [script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/interstitial-init-on-live-usb) from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)) carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
 
-The image may be downloaded from the link below (or via `wget`, per the following instructions).
-> Note that if you wish to use this image in a 'diskless' chassis, you will need to make a few small changes before booting, which are detailed later in these notes.
+The image may be downloaded from the link below (or via `wget`, per the following instructions). (Incidentally, the image is 'universal', and should work, without modification, whether your B3 has an internal hard drive fitted or not.)
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.2.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.3.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz.asc)
 
-The older images are still available [here](https://github.com/sakaki-/archlinux-on-b3/releases).
+The older images are still available (along with a short changelog) [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 10 November 2015), please refer to that site for licensing details of firmware files etc.
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 22 December 2016), please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 155MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 185MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As shipped, the image assumes you have an internal hard drive fitted; if using a diskless chassis, be sure to follow the instructions given later, before attempting to boot.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -32,10 +31,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.2.0/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (155MiB) and its signature.
+to fetch the compressed disk image file (185MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
@@ -57,48 +56,20 @@ Substitute the actual USB key device path, for example `/dev/sdc`, for `/dev/sdX
 
 The above `xzcat` to the USB key will take some time, due to the decompression (it takes between 5 and 15 minutes on my machine, depending on the USB key used). It should exit cleanly when done - if you get a message saying 'No space left on device', then your USB key is too small for the image, and you should try again with a larger capacity one.
 
-## Select Alternative Kernel (*Only* for B3s with no Hard Drive)
-
-Next, if (and **only** if) you are using a B3 without an internal hard drive fitted, you will need switch the kernel used on the USB key, or your Arch Linux system will fail to boot. 
-> Users of standard B3s (which have an internal hard drive, running, for example, the normal Excito system), can (and should) skip this step - the shipped image already has the correct kernel (and `fstab`) in place for you. Continue reading at "Booting!", [below](#booting).
-
-Specifically, users of diskless B3s will need to:
-* rename the shipped kernel `/install/install.itb` (on the USB key's first partition) to something else (`/install/install_withdisk.itb`, for example); and then
-* rename the supplied `/install/install_diskless.itb` to `/install/install.itb`; and then
-* modify the `/etc/fstab` file (on the USB key's third partition), so that the correct drive is specified.
-
-You need only make these changes once. Assuming you are using Linux:
-```
-# mkdir /tmp/mntusb
-# mount -v /dev/sdX1 /tmp/mntusb
-# mv /tmp/mntusb/install/install.itb /tmp/mntusb/install/install_withdisk.itb
-# mv /tmp/mntusb/install/install_diskless.itb /tmp/mntusb/install/install.itb
-# sed -i s/sdb/sda/g /tmp/mntusb/kexec.sh
-# sync
-# umount -v /tmp/mntusb
-# mount -v /dev/sdX3 /tmp/mntusb
-# sed -i s/sdb/sda/g /tmp/mntusb/etc/fstab
-# sync
-# umount -v /tmp/mntusb
-# rmdir /tmp/mntusb
-```
-
-Obviously, substitute the appropriate path for `/dev/sdX1` and `/dev/sdX3` in the above. If your USB key is currently on `/dev/sdc`, you'd use `/dev/sdc1` and `/dev/sdc3`; if it is on `/dev/sdd`, you'd use `/dev/sdd1` and `/dev/sdd3`, etc.
-
 ## <a name="booting"></a>Booting!
 
 Begin with your B3 powered off and the power cable removed. Insert the USB key into either of the USB slots on the back of the B3, and make sure the other USB slot is unoccupied. Connect your B3 into your local network (or directly to your ADSL router, cable modem etc., if you wish) using the **wan** Ethernet port. Then, *while holding down the button on the back of the B3*, apply power (insert the power cable). After five seconds or so, release the button. If all is well, the B3 should boot the interstitial kernel off of the USB key (rather than the internal drive), then patch, load and `kexec` the archlinuxarm.org kernel, and then proceed to mount the root partition (also from the USB key) and start Arch Linux. This will all take about 60 seconds or so. The LED on the front of the B3 should:
 
-1. first, turn **green**, for about 20 seconds, as the interstitial kernel loads; then,
+1. first, turn **green**, for about 20 seconds, and then briefly **purple**, as the interstitial kernel loads; then,
 1. turn **off** for about 10 seconds, and the 'real' kernel is patched and loaded; then
-1. turn **purple** for about 20 seconds, as the real kernel boots, and then
+1. turn **purple** again for about 20 seconds, as the real kernel boots, and then
 1. turn **green** as Arch Linux comes up.
 
 About 20 seconds after the LED turns green in step 4, above, you should be able to log in, via ssh, per the following instructions.
 
 > The image uses a solid green LED as its 'normal' state, so that you can easily tell at a glance whether your B3 is running an Excito/Debian system (blue LED) or a Arch Linux one (green LED).
 
-> Also, please note that if you have installed Arch Linux to your internal HDD (per the instructions given [later](#hdd_install)), and are booting from the HDD, that the front LED will be **purple**, not green, during phase 1.
+> Also, please note that if you have installed Arch Linux to your internal HDD (per the instructions given [later](#hdd_install)), and are booting from the HDD, that the front LED will be **purple**, not green-then-purple, throughout phase 1.
 
 ## Connecting to the B3
 
@@ -167,7 +138,8 @@ Have fun! ^-^
 
 * The specific B3 devices (LEDs, buzzer, rear button etc.) are now described by the file `arch/arm/boot/dts/kirkwood-b3.dts` in the main kernel source directory (and included in the git archive too, for reference). You can see an example of using the defined devices in `/etc/systemd/system/bootled.service`, which turns on the green LED as Arch Linux starts up, and off again on shutdown (this replaces the previous [approach](http://wiki.mybubba.org/wiki/index.php?title=Let_your_B3_beep_and_change_the_LED_color), which required an Excito-patched kernel).
 * The live USB works because the B3's firmware boot loader will automatically try to run a file called `/install/install.itb` from the first partition of the USB drive when the system is powered up with the rear button depressed. In the provided image, we have placed a bootable (interstitial) kernel uImage in that location. Despite the name, no 'installation' takes place, of course!
-* As of version 1.7.0, the `shorewall` firewall (front-end) is included and enabled. If you wish to run e.g. a web server on your B3, please remember to add the appropriate firewall rules (see my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) for some further information).
+* As mentioned, _two_ kernels are actually used during the boot process. The first, 'interstitial' kernel has an integral initramfs (an archive of which is available [here](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/initramfs.tgz)), within which is a simple init script (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/interstitial-init-on-live-usb)); this script attempts to mount the first partition of the USB key (by UUID, so it will work even on a diskless chassis) and then sources the file `/boot/kexec.sh` within it (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)). This script in turn loads the 'real' kernel zImage from `/boot`, applies a small [workaround patch](https://lists.debian.org/debian-boot/2012/08/msg00804.html), sets up the kernel command line, and then switches to this 'real' kernel (using `kexec`). You can easily modify the script fragment `/boot/kexec.sh` if you like, for example to change the kernel command line settings.
+* As of version 1.2.0, the `shorewall` firewall (front-end) is included and enabled. If you wish to run e.g. a web server on your B3, please remember to add the appropriate firewall rules (see my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) for some further information).
  * Please note that the firewall, as initially configured, will allow `ssh` traffic on the `wan` port also. Note also that `sshd` (see `/etc/ssh/ssdh_config`) is initially configured to _allow_ password-based login for `root` (you may wish to change this, once you have created at least one regular user with the ability to `su` to `root`).
 * If you have a WiFi-enabled B3, the corresponding network interface is named `wlan0` (there is a `udev` rule that does this, namely `/etc/udev/rules.d/70-net-name-use-custom.rules`). Please note that this rule will **not** work correctly if you have more than one WiFi adaptor on your B3 (an unusual case).
 * The WiFi settings are controlled by `hostapd`, and my be modified by editing `/etc/hostapd.conf`. I recommend that you at least change the passphrase (if you have a WiFi-enabled B3)!
@@ -235,7 +207,7 @@ To install / upgrade a particular package (such as e.g., the apache web server),
 [root@archb3 ~]# pacman -S apache
    (confirm when prompted)
 ```
-You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages), filter by `armv5` architecture). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
+You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages), filter by `arm` architecture). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
 
 To bring the system completely up to date at any time (Arch Linux is a rolling distribution, so it is [recommended](https://wiki.archlinux.org/index.php/pacman#Partial_upgrades_are_unsupported) to do this prior to installing any new packages), issue:
 ```
