@@ -14,6 +14,6 @@
 # <fs>			<mountpoint>	<type>		<opts>		<dump/pass>
 
 # NOTE: If your BOOT partition is ReiserFS, add the notail option to opts.
-/dev/sdb1               /boot           vfat            noatime         0 2
-/dev/sdb2               none            swap            sw              0 0
-/dev/sdb3               /               ext4            noatime         0 1
+UUID=55F3-98B5					/boot           vfat            noatime         0 2
+UUID=dd95f0e5-a3a3-43fb-b81c-3ef30e469a49	none            swap            sw              0 0
+UUID=53991838-4a0b-425b-822d-cde8a2c909b6	/               ext4            noatime         0 1

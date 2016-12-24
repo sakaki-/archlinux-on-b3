@@ -12,7 +12,7 @@
 # On entry, /boot is already mounted (read-only).
 
 # adjust the following to suit your system...
-ROOT="/dev/sdb3"
+ROOT="PARTUUID=F8F07D53-03"
 DELAY=5
 ROOTSPEC="rootfstype=ext4"
 CONSOLE="console=ttyS0,115200n8 earlyprintk"
