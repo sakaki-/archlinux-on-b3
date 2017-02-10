@@ -141,6 +141,15 @@ Have fun! ^-^
 * As mentioned, _two_ kernels are actually used during the boot process. The first, 'interstitial' kernel has an integral initramfs (an archive of which is available [here](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/initramfs.tgz)), within which is a simple init script (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/interstitial-init-on-live-usb)); this script attempts to mount the first partition of the USB key (by UUID, so it will work even on a diskless chassis) and then sources the file `/boot/kexec.sh` within it (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)). This script in turn loads the 'real' kernel zImage from `/boot`, applies a small [workaround patch](https://lists.debian.org/debian-boot/2012/08/msg00804.html), sets up the kernel command line, and then switches to this 'real' kernel (using `kexec`). You can easily modify the script fragment `/boot/kexec.sh` if you like, for example to change the kernel command line settings.
 * As of version 1.2.0, the `shorewall` firewall (front-end) is included and enabled. If you wish to run e.g. a web server on your B3, please remember to add the appropriate firewall rules (see my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) for some further information).
  * Please note that the firewall, as initially configured, will allow `ssh` traffic on the `wan` port also. Note also that `sshd` (see `/etc/ssh/ssdh_config`) is initially configured to _allow_ password-based login for `root` (you may wish to change this, once you have created at least one regular user with the ability to `su` to `root`).
+ * To allow inbound traffic to your B3, the file you need to edit is `/etc/shorewall/rules`. Add new entries to the bottom of this file. For example, to allow inbound port 8000/TCP from `br0` (the `loc` zone) and 8001/UDP, 8001/TCP from `eth0` (the `net` zone), you would add:
+
+    ```
+ACCEPT loc $FW tcp 8000
+ACCEPT net $FW udp 8001
+ACCEPT net $FW tcp 8001
+```
+  Then simply reboot your B3, or issue `systemctl restart shorewall` to pick up the changes.
+
 * If you have a WiFi-enabled B3, the corresponding network interface is named `wlan0` (there is a `udev` rule that does this, namely `/etc/udev/rules.d/70-net-name-use-custom.rules`). Please note that this rule will **not** work correctly if you have more than one WiFi adaptor on your B3 (an unusual case).
 * The WiFi settings are controlled by `hostapd`, and my be modified by editing `/etc/hostapd.conf`. I recommend that you at least change the passphrase (if you have a WiFi-enabled B3)!
 * If you have a USB key larger than the minimum 4GB, after writing the image you can easily extend the size of the third partition (using `fdisk` and `resize2fs`), so you have more space to work in. See [these instructions](http://geekpeek.net/resize-filesystem-fdisk-resize2fs/), for example.
