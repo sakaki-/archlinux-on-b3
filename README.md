@@ -13,16 +13,16 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.3.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.4.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.4.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.4.0/archb3img.xz.asc)
 
 The older images are still available (along with a short changelog) [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 22 December 2016), please refer to that site for licensing details of firmware files etc.
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 15 April 2017), please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 185MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 191MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As of version 1.3.0, the same image will work both for the case where you have an internal hard drive in your B3 (the normal situation), _and_ for the case where you are running a diskless B3 chassis.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -32,10 +32,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.4.0/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.4.0/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (185MiB) and its signature.
+to fetch the compressed disk image file (191MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
