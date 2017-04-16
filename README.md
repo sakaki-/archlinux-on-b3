@@ -144,7 +144,7 @@ Have fun! ^-^
  * Please note that the firewall, as initially configured, will allow `ssh` traffic on the `wan` port also. Note also that `sshd` (see `/etc/ssh/ssdh_config`) is initially configured to _allow_ password-based login for `root` (you may wish to change this, once you have created at least one regular user with the ability to `su` to `root`).
  * To allow inbound traffic to your B3, the file you need to edit is `/etc/shorewall/rules`. Add new entries to the bottom of this file. For example, to allow inbound port 8000/TCP from `br0` (the `loc` zone) and 8001/UDP, 8001/TCP from `eth0` (the `net` zone), you would add:
 
-    ```
+```
 ACCEPT loc $FW tcp 8000
 ACCEPT net $FW udp 8001
 ACCEPT net $FW tcp 8001
