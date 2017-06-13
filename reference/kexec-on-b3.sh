@@ -15,13 +15,21 @@
 ROOT="/dev/sda3"
 ROOTSPEC="rootfstype=ext4"
 CONSOLE="console=ttyS0,115200n8 earlyprintk"
+INITRAMFS="/boot/initramfs-linux.img"
 
 echo "Creating patched zImage from archlinuxarm version..."
 cat /boot/cache_head_patch /boot/zImage > zImage
 echo "Loading patched kernel and setting command line..."
-kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
-  --append="root=${ROOT} ${ROOTSPEC} ${CONSOLE}" \
-  --load zImage
+if [ -f "${INITRAMFS}" ]; then
+  kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
+    --image="${INITRAMFS}" \
+    --append="root=${ROOT} ${ROOTSPEC} ${CONSOLE}" \
+    --load zImage
+else
+  kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
+    --append="root=${ROOT} ${ROOTSPEC} ${CONSOLE}" \
+    --load zImage
+fi
 umount /boot
 echo "Booting patched kernel with kexec..."
 kexec -e

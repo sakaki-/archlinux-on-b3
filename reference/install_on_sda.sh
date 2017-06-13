@@ -69,6 +69,9 @@ echo "Step 4 of 5: copying system and bootfiles (please be patient)..."
 mkdir -p /mnt/sdaboot/boot >>"${LOG}" 2>&1
 # this is the current copy of the archlinuxarm kernel...
 cp -ax /boot/zImage /mnt/sdaboot/ >>"${LOG}" 2>&1
+if [ -f /boot/initramfs-linux.img ]; then
+  cp -ax /boot/initramfs-linux.img /mnt/sdaboot/ >>"${LOG}" 2>&1
+fi
 cp -ax /boot/dtbs /mnt/sdaboot/ >>"${LOG}" 2>&1
 cp -ax /boot/cache_head_patch /mnt/sdaboot/ >>"${LOG}" 2>&1
 cp -ax /boot/kirkwood-b3.dtb /mnt/sdaboot/ >>"${LOG}" 2>&1

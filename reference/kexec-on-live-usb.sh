@@ -1,4 +1,4 @@
-# Copyright (c) 2015 sakaki <sakaki@deciban.com>
+# Copyright (c) 2015-7 sakaki <sakaki@deciban.com>
 # License: GPL 3.0+
 # NO WARRANTY
 
@@ -16,13 +16,22 @@ ROOT="PARTUUID=F8F07D53-03"
 DELAY=5
 ROOTSPEC="rootfstype=ext4"
 CONSOLE="console=ttyS0,115200n8 earlyprintk"
+INITRAMFS="/boot/initramfs-linux.img"
 
 echo "Creating patched zImage from archlinuxarm version..."
 cat /boot/cache_head_patch /boot/zImage > zImage
 echo "Loading patched kernel and setting command line..."
-kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
-  --append="root=${ROOT} ${ROOTSPEC} rootdelay=${DELAY} ${CONSOLE}" \
-  --load zImage
+# more recent Arch kernels have an initramfs, and require this to boot
+if [ -f "${INITRAMFS}" ]; then
+  kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
+    --image="${INITRAMFS}" \
+    --append="root=${ROOT} ${ROOTSPEC} rootdelay=${DELAY} ${CONSOLE}" \
+    --load zImage
+else
+  kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
+    --append="root=${ROOT} ${ROOTSPEC} rootdelay=${DELAY} ${CONSOLE}" \
+    --load zImage
+fi
 umount /boot
 echo "Booting patched kernel with kexec..."
 kexec -e
