@@ -15,14 +15,18 @@
 ROOT="/dev/sda3"
 ROOTSPEC="rootfstype=ext4"
 CONSOLE="console=ttyS0,115200n8 earlyprintk"
-INITRAMFS="/boot/initramfs-linux.img"
+
+INITRAMFS="DONT_USE"
+# uncomment below to use Arch's initramfs
+# only needed for advanced users; serial console recommended
+#INITRAMFS="/boot/initramfs-linux.img"
 
 echo "Creating patched zImage from archlinuxarm version..."
 cat /boot/cache_head_patch /boot/zImage > zImage
 echo "Loading patched kernel and setting command line..."
 if [ -f "${INITRAMFS}" ]; then
   kexec --type=zImage --dtb=/boot/kirkwood-b3.dtb \
-    --image="${INITRAMFS}" \
+    --initrd="${INITRAMFS}" \
     --append="root=${ROOT} ${ROOTSPEC} ${CONSOLE}" \
     --load zImage
 else
