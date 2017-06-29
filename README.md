@@ -13,7 +13,7 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.5.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.0/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.5.1 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz.asc)
 
 The older images are still available (along with a short changelog) [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
@@ -32,8 +32,8 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.0/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.0/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz.asc
 ```
 to fetch the compressed disk image file (193MiB) and its signature.
 
