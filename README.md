@@ -14,6 +14,9 @@ The image may be downloaded from the link below (or via `wget`, per the followin
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
 B3 with or without Internal Drive | 1.5.1 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz.asc)
+Special Edition (Debian Kernel, For Testing Only) | 1.5.1 (se) | [archb3seimg.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3seimg.xz) | [archb3seimg.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3seimg.xz.asc)
+
+NB: the "special edition" (`archb3seimg.xz`) variant has a Debian kernel, and is for testing purposes only (per my forum post [here](http://forum.excito.com/viewtopic.php?f=7&p=28226#p28226)). Unless you specifically know you want this, please use the standard (`archb3img.xz`) release version.
 
 The older images are still available (along with a short changelog) [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
