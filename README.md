@@ -20,7 +20,7 @@ NB: the "special edition" (`archb3seimg.xz`) variant has a Debian kernel, and is
 
 The older images are still available (along with a short changelog) [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 15 April 2017), please refer to that site for licensing details of firmware files etc.
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 13 June 2017), please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
