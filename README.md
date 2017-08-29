@@ -203,6 +203,8 @@ Of course, if you changed root's password in the USB image, use that new passwor
 
 Once logged in, feel free to configure your system as you like! Of course, if you're intending to use the B3 as an externally visible server,  you should take the usual precautions, such as changing root's password, configuring a firewall, possibly [changing the `ssh` host keys](https://missingm.co/2013/07/identical-droplets-in-the-digitalocean-regenerate-your-ubuntu-ssh-host-keys-now/#how-to-generate-new-host-keys-on-an-existing-server), etc.
 
+> Please note that the above HDD-install script does _not_ copy over the contents of `/home/` (if any) from your live-USB to the HDD, so if you have setup one or more non-root user accounts on the live-USB, be sure to copy your user files across yourself, after rebooting.
+
 ## <a name="updating"></a>Keeping Your Arch Linux System Up-To-Date
 
 You can update your system at any time (whether you are running Arch Linux from USB or the B3's internal drive). 
