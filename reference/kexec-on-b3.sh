@@ -16,6 +16,12 @@ ROOT="/dev/sda3"
 ROOTSPEC="rootfstype=ext4"
 CONSOLE="console=ttyS0,115200n8 earlyprintk"
 
+echo "Ensuring Ethernet NICs are preserved..."
+# set temporary spoof addresses, see
+# https://forum.excito.com/viewtopic.php?p=28845#p28845
+ifconfig eth0 10.250.251.252 netmask 255.255.255.255
+ifconfig eth1 10.250.251.253 netmask 255.255.255.255
+
 INITRAMFS="DONT_USE"
 # uncomment below to use Arch's initramfs
 # only needed for advanced users; serial console recommended

@@ -1,0 +1,12 @@
+[Unit]
+Description=Simple Forwarding Firewall for B3
+After=syslog.target network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/fw-setup
+ExecStop=/usr/local/sbin/fw-setup flush
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

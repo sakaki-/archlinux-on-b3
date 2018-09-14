@@ -1,0 +1,164 @@
+#!/bin/bash
+#
+# Simple forwarding firewall setup, using ip{,6}tables.
+#
+# Pass "flush" as argument, to clear rules & enter permissive stance;
+# otherwise the firewall will be setup as follows:
+#  * forwarding from br0 (wlan+lan) to wan (eth0) allowed, and
+#    masquerading for wan egress traffic enabled
+#  * all traffic originating directly from B3 allowed
+#  * inbound traffic from wan dropped, unless ssh or ping
+#    (or related to an outbound or forwarded communication in progress)
+#  * inbound ssh, ping, dns and dhcp from br0 allowed
+#  * all other inbound traffic from br0 rejected (unless related
+#    to a communication in progress)
+#  * all IPv6 inbound traffic (unless from from lo) dropped.
+#
+# Feel free to modify this script as required! If you want to expose
+# an additional service on your B3 (e.g. a webserver), the function
+# you need to edit is add_permitted_inputs().
+#
+# Copyright (c) 2018 sakaki <sakaki@deciban.com>
+#
+# License (GPL v3.0)
+# ------------------
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+
+set -e
+set -u
+
+# only "flush" is accepted as (optional) argument
+ARG1="${1:-setup}"
+
+# programs we will use
+IPTABLES=/usr/bin/iptables
+IP6TABLES=/usr/bin/ip6tables
+MODPROBE=/usr/bin/modprobe
+
+# print prefix
+P="[+]"
+
+# tables
+NAT_TABLE="-t nat"
+MANGLE_TABLE="-t mangle"
+RAW_TABLE="-t raw"
+
+# B3 interfaces
+WAN="eth0"
+LAN="eth1"
+BRIDGE="br0"
+
+flush_firewall() {
+    for IPT in "$IPTABLES" "$IP6TABLES"; do
+        echo "$P flushing $IPT"
+        $IPT -F # flush all rules
+        for TBL in "$NAT_TABLE" "$MANGLE_TABLE" "$RAW_TABLE"; do
+            $IPT -F $TBL # flush table
+            $IPT -X $TBL # delete table
+        done
+        $IPT -X # delete all non-builtin chains
+        $IPT -Z # flush all counters
+    done
+}
+
+set_default_stance() {
+    for IPT in "$IPTABLES" "$IP6TABLES"; do
+        echo "$P setting default accept stance for $IPT"
+        $IPT -P INPUT DROP
+        $IPT -P OUTPUT ACCEPT
+        $IPT -P FORWARD DROP
+    done
+}
+
+set_permissive_stance() {
+    for IPT in "$IPTABLES" "$IP6TABLES"; do
+        echo "$P setting permissive stance for $IPT"
+        $IPT -P INPUT ACCEPT
+        $IPT -P OUTPUT ACCEPT
+        $IPT -P FORWARD ACCEPT
+    done
+}
+
+enable_ip_forwarding() {
+    echo "$P disabling IP(v4) forwarding"
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+}
+
+drop_invalid_inputs() {
+    $IPTABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
+    $IP6TABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
+}
+
+add_permitted_inputs() {
+    echo "$P adding permitted inputs"
+    # loopback (also ipv6)
+    $IPTABLES -A INPUT -i lo -j ACCEPT
+    $IP6TABLES -A INPUT -i lo -j ACCEPT
+    # replies to existing connections
+    $IPTABLES -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    # ssh from anywhere (wan or bridge)
+    $IPTABLES -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+    # dns requests from bridge
+    $IPTABLES -A INPUT -p udp -m udp -i $BRIDGE --dport 53 -j ACCEPT
+    $IPTABLES -A INPUT -p tcp -m tcp -i $BRIDGE --dport 53 -j ACCEPT
+    # ping from anywhere
+    $IPTABLES -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+    # dhcp requests from bridge
+    $IPTABLES -A INPUT -p udp -m udp -i $BRIDGE --dport 67 --sport 68 \
+        -j ACCEPT
+    # add your own rules here! e.g. to allow web traffic, uncomment
+    #$IPTABLES -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT
+}
+
+reject_unknown_bridge_inputs() {
+    # finally, reject, not drop, other traffic from bridge
+    # since assumed less hostile than wan
+    $IPTABLES -A INPUT -i $BRIDGE -j REJECT
+}
+
+add_permitted_forwarding() {
+    echo "$P enabling permitted forwards and masqerading"
+    # all traffic from bridge to wan
+    $IPTABLES -A FORWARD -i $BRIDGE -o $WAN -j ACCEPT
+    # related reply traffic from wan to bridge
+    $IPTABLES -A FORWARD -i $WAN -o $BRIDGE -m state --state \
+        ESTABLISHED,RELATED -j ACCEPT
+    # turn on masquerading for this traffic on egress
+    $IPTABLES -t nat -A POSTROUTING -o $WAN -j MASQUERADE
+}
+
+print_greeting() {
+    echo "**** iptables / ip6tables setup script ****"
+    echo "****          (flushing all)           ****"
+}
+
+print_final_status() {
+    echo "All done!"
+}
+
+# main script starts here
+print_greeting
+flush_firewall
+if [[ "$ARG1" == "flush" ]]; then
+    set_permissive_stance
+else
+    set_default_stance
+    enable_ip_forwarding
+    drop_invalid_inputs
+    add_permitted_inputs
+    reject_unknown_bridge_inputs
+    add_permitted_forwarding
+fi
+print_final_status
+exit 0
+

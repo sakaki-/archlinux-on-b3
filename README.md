@@ -6,26 +6,26 @@ Bootable live-USB of Arch Linux for the Excito B3 miniserver (with [archlinuxarm
 
 This project contains a bootable, live-USB image for the Excito B3 miniserver. You can use it as a rescue disk, to play with Arch Linux, or as the starting point to install Arch Linux on your B3's main hard drive. You can even use it on a diskless B3. No soldering, compilation, or [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) flashing is required! You can run it without harming your B3's existing software; however, any changes you make while running the system *will* be saved to the USB (i.e., there is persistence).
 
-As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`.
+As of release 1.1.0, the current [linux-kirkwood-dt](https://github.com/archlinuxarm/PKGBUILDs/tree/master/core/linux-kirkwood-dt) kernel from [archlinuxarm.org](http://archlinuxarm.org) is used. Accordingly, this will automatically be updated (along with all other packages on your system) whenever you issue `pacman -Syu`; the shipped kernel package is `linux-kirkwood-dt 4.18.7-1`.
 > For those interested, this is possible (_without_ requiring a U-Boot reflash) because the image actually boots an interstitial kernel to begin with. This interstitial kernel (whose version never changes) runs a [script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/interstitial-init-on-live-usb) from its integral initramfs to patch the 'real' archlinuxarm kernel in `/boot`, set up the command line, load the patched kernel into memory, and then switch to it (using `kexec`). The sourced script fragment `/boot/kexec.sh` (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)) carries the majority of this work, and you can edit this file if you like (for example, to modify the kernel command line).
 
 The image may be downloaded from the link below (or via `wget`, per the following instructions). (Incidentally, the image is 'universal', and should work, without modification, whether your B3 has an internal hard drive fitted or not.)
 
 Variant | Version | Image | Digital Signature
 :--- | ---: | ---: | ---:
-B3 with or without Internal Drive | 1.5.1 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz.asc)
+B3 with or without Internal Drive | 1.6.0 | [archb3img.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.6.0/archb3img.xz) | [archb3img.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.6.0/archb3img.xz.asc)
 Special Edition (Debian Kernel, For Testing Only) | 1.5.1 (se) | [archb3seimg.xz](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3seimg.xz) | [archb3seimg.xz.asc](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3seimg.xz.asc)
 
 NB: the "special edition" (`archb3seimg.xz`) variant has a Debian kernel, and is for testing purposes only (per my forum post [here](http://forum.excito.com/viewtopic.php?f=7&p=28226#p28226)). Unless you specifically know you want this, please use the standard (`archb3img.xz`) release version.
 
 The older images are still available (along with a short changelog) [here](https://github.com/sakaki-/archlinux-on-b3/releases).
 
-> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 13 June 2017), please refer to that site for licensing details of firmware files etc.
+> Please read the instructions below before proceeding. Also please note that the image is provided 'as is' and without warranty. And also, since it is largely based on the Kirkwood image from [archlinuxarm.org](http://archlinuxarm.org) (fully updated as of 14 September 2018) please refer to that site for licensing details of firmware files etc.
 
 ## Prerequisites
 
 To try this out, you will need:
-* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 193MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
+* A USB key of at least 4GB capacity (the _compressed_ (.xz) image is 247MiB, the uncompressed image is 7,358,464 (512 byte) sectors = 3,767,533,568 bytes). Unfortunately, not all USB keys work with the version of [U-Boot](http://www.denx.de/wiki/U-Boot/WebHome) on the B3 (2010.06 on my device). Most SanDisk and Lexar USB keys appear to work reliably, but others (e.g., Verbatim keys) will not boot properly. (You may find the list of known-good USB keys [in this post](http://forum.doozan.com/read.php?2,1915,page=1) useful.)
 * An Excito B3 (obviously!). As of version 1.3.0, the same image will work both for the case where you have an internal hard drive in your B3 (the normal situation), _and_ for the case where you are running a diskless B3 chassis.
 * A PC to decompress the appropriate image and write it to the USB key (of course, you can also use your B3 for this, assuming it is currently running the standard Excito / Debian Squeeze system). This is most easily done on a Linux machine of some sort, but tools are also available for Windows (see [here](http://tukaani.org/xz/) and [here](http://sourceforge.net/projects/win32diskimager/), for example). In the instructions below I'm going to assume you're using Linux.
 
@@ -35,10 +35,10 @@ To try this out, you will need:
 
 On your Linux box, issue:
 ```
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz
-# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.5.1/archb3img.xz.asc
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.6.0/archb3img.xz
+# wget -c https://github.com/sakaki-/archlinux-on-b3/releases/download/1.6.0/archb3img.xz.asc
 ```
-to fetch the compressed disk image file (193MiB) and its signature.
+to fetch the compressed disk image file (237MiB) and its signature.
 
 Next, if you like, verify the image using `gpg` (this step is optional):
 ```
@@ -91,13 +91,13 @@ Warning: Permanently added 'archb3,192.168.50.1' (ED25519) to the list of known 
 Password: <type root and press Enter>
 [root@archb3 ~]# 
 ```
-and you're in! You may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
+and you're in (as shown above, the initial root password is `root`)! You may receive a different fingerprint type, depending on what your `ssh` client supports. Also, please note that as of version 1.1.0, the `ssh` host keys are generated on first boot (for security), and so the fingerprint you get will be different from that shown above.
 
 > If you have trouble with `ssh root@archb3`, you can also try using `ssh root@192.168.50.1` instead.
 
 If you have previously connected to a *different* machine with the *same* IP address as your B3 via `ssh` from the client PC, you may need to delete its host fingerprint (from `~/.ssh/known_hosts` on the PC) before `ssh` will allow you to connect.
 
-> Incidentally, you should also be able to browse the web etc. from your client (assuming that you connected the B3's `wan` port prior to boot), because the image has a forwarding `shorewall` firewall setup, as of version 1.2.0.
+> Incidentally, you should also be able to browse the web etc. from your client (assuming that you connected the B3's `wan` port prior to boot), because the image has a forwarding firewall, initialized via [this `systemd` service](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/setup-b3-firewall.service), which in turn runs [this script](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/fw-setup).
 
 ## Using Arch Linux
 
@@ -105,14 +105,14 @@ The supplied image contains a configured Arch Linux system, based on the `ArchLi
 
 Be aware that, as shipped, it has a UTC timezone and no system locale; however, these are easily changed if desired. See the [Arch Linux Beginners' Guide](https://wiki.archlinux.org/index.php/beginners'_guide) for details.
 
+The full set of packages in the image may be viewed [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/installed-packages).
+
 The initial networking setup of the live-USB is as follows (patterned on the setup laid out in my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server)):
 
 ![Initial B3 Networking Setup](https://raw.githubusercontent.com/sakaki-/resources/master/excito/b3/arch_b3_initial_networking_setup.png)
 
 Feel free to change this as desired.
 > If you have used previous versions of this live-USB, please note that the initial networking setup has changed. There is no need to specify the `/install/wan` file, and the `copynetsetup` service is now disabled.
-
-> Please be aware that, because the image uses `kexec` to boot the [archlinuxarm.org](http://archlinuxarm.org) kernel, the MACs of the ethernet adaptors (eth0 and eth1) are _not_ set by U-Boot, but by the `setethermac` service (see the file `/etc/systemd/system/setethermac@.service`). Accordingly, if you use a udev rule to change the names of these interfaces (as suggested [here](http://wiki.mybubba.org/wiki/index.php?title=Running_Arch_Linux#Prepare_Network_Interfaces), for example), their MACs will not be correctly initialized, and you may be unable to connect.
 
 You can change your B3's hostname if you like; for example, to change it to 'hana' (and to reflect the change immediately), issue:
 ```
@@ -140,20 +140,12 @@ Have fun! ^-^
 
 ## Miscellaneous Points
 
-* The specific B3 devices (LEDs, buzzer, rear button etc.) are now described by the file `arch/arm/boot/dts/kirkwood-b3.dts` in the main kernel source directory (and included in the git archive too, for reference). You can see an example of using the defined devices in `/etc/systemd/system/bootled.service`, which turns on the green LED as Arch Linux starts up, and off again on shutdown (this replaces the previous [approach](http://wiki.mybubba.org/wiki/index.php?title=Let_your_B3_beep_and_change_the_LED_color), which required an Excito-patched kernel).
+* The specific B3 devices (LEDs, buzzer, rear button etc.) are described by the file `arch/arm/boot/dts/kirkwood-b3.dts` in the main kernel source directory (and included in the git archive too, for reference). You can see an example of using the defined devices in `/etc/systemd/system/bootled.service`, which turns on the green LED as Arch Linux starts up, and off again on shutdown (this replaces the previous [approach](http://wiki.mybubba.org/wiki/index.php?title=Let_your_B3_beep_and_change_the_LED_color), which required an Excito-patched kernel).
 * The live USB works because the B3's firmware boot loader will automatically try to run a file called `/install/install.itb` from the first partition of the USB drive when the system is powered up with the rear button depressed. In the provided image, we have placed a bootable (interstitial) kernel uImage in that location. Despite the name, no 'installation' takes place, of course!
 * As mentioned, _two_ kernels are actually used during the boot process. The first, 'interstitial' kernel has an integral initramfs (an archive of which is available [here](https://github.com/sakaki-/archlinux-on-b3/releases/download/1.3.0/initramfs.tgz)), within which is a simple init script (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/interstitial-init-on-live-usb)); this script attempts to mount the first partition of the USB key (by UUID, so it will work even on a diskless chassis) and then sources the file `/boot/kexec.sh` within it (which you can see [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/kexec-on-live-usb.sh)). This script in turn loads the 'real' kernel zImage from `/boot`, applies a small [workaround patch](https://lists.debian.org/debian-boot/2012/08/msg00804.html), sets up the kernel command line, and then switches to this 'real' kernel (using `kexec`). You can easily modify the script fragment `/boot/kexec.sh` if you like, for example to change the kernel command line settings.
-* As of version 1.2.0, the `shorewall` firewall (front-end) is included and enabled. If you wish to run e.g. a web server on your B3, please remember to add the appropriate firewall rules (see my wiki page [here](https://github.com/sakaki-/archlinux-on-b3/wiki/Set-Up-Your-B3-as-a-WiFi-Gateway-Server) for some further information).
+  * As of version 1.6.0, [Gordon's workaround](https://forum.excito.com/viewtopic.php?p=28845#p28845) to retain the Ethernet MACs across `kexec` has been implemented, so the `setethermac` service is no-longer enabled.
+* Also as of version 1.6.0, the `shorewall` firewall (front-end) has been replaced by a (simpler-to-maintain) script, `/usr/local/sbin/fw-setup`, started by the `setup-b3-firewall` service. If you wish to run e.g. a web server on your B3, please remember to add the appropriate stanzas to the `add_permitted_inputs()` function in this script (the shipped version may be viewed [here](https://github.com/sakaki-/archlinux-on-b3/blob/master/reference/fw-setup)).
  * Please note that the firewall, as initially configured, will allow `ssh` traffic on the `wan` port also. Note also that `sshd` (see `/etc/ssh/ssdh_config`) is initially configured to _allow_ password-based login for `root` (you may wish to change this, once you have created at least one regular user with the ability to `su` to `root`).
- * To allow inbound traffic to your B3, the file you need to edit is `/etc/shorewall/rules`. Add new entries to the bottom of this file. For example, to allow inbound port 8000/TCP from `br0` (the `loc` zone) and 8001/UDP, 8001/TCP from `eth0` (the `net` zone), you would add:
-
-```
-ACCEPT loc $FW tcp 8000
-ACCEPT net $FW udp 8001
-ACCEPT net $FW tcp 8001
-```
-  Then simply reboot your B3, or issue `systemctl restart shorewall` to pick up the changes.
-
 * If you have a WiFi-enabled B3, the corresponding network interface is named `wlan0` (there is a `udev` rule that does this, namely `/etc/udev/rules.d/70-net-name-use-custom.rules`). Please note that this rule will **not** work correctly if you have more than one WiFi adaptor on your B3 (an unusual case).
 * The WiFi settings are controlled by `hostapd`, and my be modified by editing `/etc/hostapd.conf`. I recommend that you at least change the passphrase (if you have a WiFi-enabled B3)!
 * If you have a USB key larger than the minimum 4GB, after writing the image you can easily extend the size of the third partition (using `fdisk` and `resize2fs`), so you have more space to work in. See [these instructions](http://geekpeek.net/resize-filesystem-fdisk-resize2fs/), for example.
@@ -203,7 +195,7 @@ Of course, if you changed root's password in the USB image, use that new passwor
 
 Once logged in, feel free to configure your system as you like! Of course, if you're intending to use the B3 as an externally visible server,  you should take the usual precautions, such as changing root's password, configuring a firewall, possibly [changing the `ssh` host keys](https://missingm.co/2013/07/identical-droplets-in-the-digitalocean-regenerate-your-ubuntu-ssh-host-keys-now/#how-to-generate-new-host-keys-on-an-existing-server), etc.
 
-> Please note that the above HDD-install script does _not_ copy over the contents of `/home/` (if any) from your live-USB to the HDD, so if you have setup one or more non-root user accounts on the live-USB, be sure to copy your user files across yourself, after rebooting.
+> Please note that the above HDD-install script does *not* copy over the contents of `/home/` (if any) from your live-USB to the HDD, so if you have setup one or more non-root user accounts on the live-USB, be sure to copy your user files across yourself, after rebooting.
 
 ## <a name="updating"></a>Keeping Your Arch Linux System Up-To-Date
 
@@ -222,7 +214,7 @@ To install / upgrade a particular package (such as e.g., the apache web server),
 [root@archb3 ~]# pacman -S apache
    (confirm when prompted)
 ```
-You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages), filter by `arm` architecture). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
+You can install any packages you like using `pacman`, it should not break your system (you can search for available packages [here](http://archlinuxarm.org/packages), filter by `arm` architecture, or by name using `pacman -Sc <pkgname>`). If working from the USB, any packages you install will still be present next time you boot off the USB (and will also be copied over to the hard drive, should you choose to do that, as described earlier).
 
 To bring the system completely up to date at any time (Arch Linux is a rolling distribution, so it is [recommended](https://wiki.archlinux.org/index.php/pacman#Partial_upgrades_are_unsupported) to do this prior to installing any new packages), issue:
 ```
